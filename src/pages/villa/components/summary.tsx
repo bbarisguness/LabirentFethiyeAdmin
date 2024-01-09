@@ -70,7 +70,7 @@ const VillaSummary = () => {
                           <Sms size={18} />
                         </ListItemIcon>
                         <ListItemSecondaryAction>
-                          <Typography align="right">anshan.dh81@gmail.com</Typography>
+                          <Typography align="right">Ahmet Çelik</Typography>
                         </ListItemSecondaryAction>
                       </ListItem>
                       <ListItem>
