@@ -19,6 +19,9 @@ import { LabelKeyObject } from 'react-csv/lib/core';
 import MainCard from 'components/MainCard';
 import { CSVExport } from 'components/third-party/ReactTable';
 import useVillas from 'hooks/villa/useVillas';
+import IconButton from 'components/@extended/IconButton';
+import { Edit, Eye } from 'iconsax-react';
+import { MouseEvent } from 'react';
 
 export const header: LabelKeyObject[] = [
   { label: 'Dessert (100g serving)', key: 'name' },
@@ -66,6 +69,7 @@ const VillaList = () => {
               <TableCell align="right">Bölge</TableCell>
               <TableCell align="right">Oda Sayısı</TableCell>
               <TableCell align="right">Kişi Sayısı</TableCell>
+              <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -79,6 +83,15 @@ const VillaList = () => {
                   <TableCell align="right">{row.attributes.region}</TableCell>
                   <TableCell align="right">{row.attributes.room}</TableCell>
                   <TableCell align="right">{row.attributes.person}</TableCell>
+
+                  <TableCell align="right">
+                    <IconButton color="secondary" onClick={(e: MouseEvent<HTMLButtonElement>) => {}}>
+                      <Eye />
+                    </IconButton>
+                    <IconButton color="secondary" onClick={(e: MouseEvent<HTMLButtonElement>) => {}}>
+                      <Edit />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
