@@ -70,7 +70,7 @@ const VillaSummary = () => {
                           <Sms size={18} />
                         </ListItemIcon>
                         <ListItemSecondaryAction>
-                          <Typography align="right">anshan.dh81@gmail.com</Typography>
+                          <Typography align="right">Ahmet Çelik</Typography>
                         </ListItemSecondaryAction>
                       </ListItem>
                       <ListItem>
@@ -78,7 +78,7 @@ const VillaSummary = () => {
                           <CallCalling size={18} />
                         </ListItemIcon>
                         <ListItemSecondaryAction>
-                          <Typography align="right">(+1-876) 8654 239 581</Typography>
+                          <Typography align="right">0532 000 00 00</Typography>
                         </ListItemSecondaryAction>
                       </ListItem>
                       <ListItem>
@@ -86,7 +86,7 @@ const VillaSummary = () => {
                           <Gps size={18} />
                         </ListItemIcon>
                         <ListItemSecondaryAction>
-                          <Typography align="right">New York</Typography>
+                          <Typography align="right">Fethiye</Typography>
                         </ListItemSecondaryAction>
                       </ListItem>
                     </List>

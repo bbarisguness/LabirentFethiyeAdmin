@@ -57,7 +57,8 @@ const MainCard = forwardRef(
       title,
       codeHighlight = false,
       codeString,
-      modal = false,
+      modal = false,      
+      cardHeaderStyle,
       ...others
     }: MainCardProps,
     ref: Ref<HTMLDivElement>
@@ -109,6 +110,7 @@ const MainCard = forwardRef(
             title={title}
             action={secondary}
             subheader={subheader}
+            style={cardHeaderStyle}
           />
         )}
         {darkTitle && title && <CardHeader sx={headerSX} title={<Typography variant="h4">{title}</Typography>} action={secondary} />}

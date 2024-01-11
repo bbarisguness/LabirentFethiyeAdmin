@@ -1,5 +1,5 @@
 // assets
-import { Building3, PresentionChart,Calendar1,Calendar2, Settings } from 'iconsax-react';
+import { Building3, PresentionChart, Calendar1, Calendar2, Settings } from 'iconsax-react';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -17,31 +17,31 @@ const icons = {
 
 const fast: NavItemType = {
   id: 'group-fast',
-  title: "Hızlı İşlemler",
+  title: 'Hızlı İşlemler',
   icon: icons.widgets,
   type: 'group',
   children: [
     {
       id: 'fast-ozet',
-      title: "Özet",
+      title: 'Özet',
       type: 'item',
-      url: '#',
+      url: '/',
       icon: icons.widgets
     },
     {
       id: 'fast-daily',
-      title: "Günlük İşlemler",
+      title: 'Günlük İşlemler',
       type: 'item',
       url: '#',
       icon: icons.widgets
     },
     {
-        id: 'fast-reservation',
-        title: "Yeni Rezervasyon",
-        type: 'item',
-        url: '#',
-        icon: icons.calendar
-      }
+      id: 'fast-reservation',
+      title: 'Yeni Rezervasyon',
+      type: 'item',
+      url: '#',
+      icon: icons.calendar
+    }
   ]
 };
 
