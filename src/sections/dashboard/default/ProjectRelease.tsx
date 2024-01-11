@@ -1,69 +1,53 @@
+import { useNavigate } from 'react-router-dom';
+
 // material-ui
-import { Button, Chip, Grid, LinearProgress, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
+import { Grid, List, ListItemButton, ListItemIcon, ListItemText, CircularProgress } from '@mui/material';
 
 // project-imports
 import MainCard from 'components/MainCard';
 import Dot from 'components/@extended/Dot';
 
-// assets
-import { Add, Link1 } from 'iconsax-react';
-
 // =========================|| DATA WIDGET - ADD NEW TASK ||========================= //
+import useDailyReservationAction from 'hooks/dashboard/useDailyReservationAction';
+
+//http://18.157.131.119:1337/api/reservations?populate[0]=reservation_infos&populate[1]=villa&filters[$or][0][checkIn][$eq]=2024-01-11&filters[$or][1][checkOut][$eq]=2024-01-11
 
 const ProjectRelease = () => {
+  let separator = '-';
+  let newDate = new Date();
+  let date = newDate.getDate();
+  let month = newDate.getMonth() + 1;
+  let year = newDate.getFullYear();
+  let dateNow = `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`;
+  //console.log(dateNow);
+  //console.log(`${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`);
+
+  const navigate = useNavigate();
+
+  const { data, isLoading } = useDailyReservationAction(dateNow);
+  //console.log(data?.data.data);
+  if (isLoading) {
+  }
   return (
-    <MainCard title="Project - Able Pro    ">
+    <MainCard title="Bugün Giriş ve Çıkışlar">
       <Grid container spacing={1.5}>
         <Grid item xs={12}>
-          <Stack spacing={1}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Typography>Release v1.2.0</Typography>
-              <Typography>72%</Typography>
-            </Stack>
-            <LinearProgress variant="determinate" value={72} />
-          </Stack>
-        </Grid>
-        <Grid item xs={12}>
           <List>
-            <ListItemButton sx={{ flexWrap: 'wrap', rowGap: 1 }}>
-              <ListItemIcon>
-                <Dot color="warning" />
-              </ListItemIcon>
-              <ListItemText primary="Horizontal Layout" />
-              <Chip
-                label={
-                  <Typography sx={{ display: 'flex', alignItems: 'center', gap: 0.5, '& svg': { width: 12, height: 12 } }}>
-                    <Link1 />2
-                  </Typography>
-                }
-                size="small"
-                sx={{ borderRadius: 1 }}
-              />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <Dot color="warning" />
-              </ListItemIcon>
-              <ListItemText primary="Invoice Generator" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <Dot />
-              </ListItemIcon>
-              <ListItemText primary="Package Upgrades" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <Dot color="success" />
-              </ListItemIcon>
-              <ListItemText primary="Figma Auto Layout" />
-            </ListItemButton>
+            {isLoading && <CircularProgress />}
+            {data &&
+              data?.data.data.map((row: any, index: any) => (
+                <ListItemButton key={index} onClick={() => navigate('/reservation/show/' + row.id)}>
+                  <ListItemIcon>
+                    <Dot color={row.attributes.checkOut == '2024-01-11' ? 'warning' : 'success'} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      (row.attributes.checkOut == '2024-01-11' ? 'ÇIKIŞ - ' : 'GİRİŞ - ') + ' ' + row.attributes.villa.data.attributes.name
+                    }
+                  />
+                </ListItemButton>
+              ))}
           </List>
-        </Grid>
-        <Grid item xs={12}>
-          <Button fullWidth variant="contained" startIcon={<Add />}>
-            Add task
-          </Button>
         </Grid>
       </Grid>
     </MainCard>
