@@ -71,7 +71,7 @@ const VillaContent = () => {
                   <TableBody>
                     {isLoading && <CircularProgress />}
                     {data &&
-                      data?.data.data.attributes.distance_rulers.data.map((row: any, key: any) => (
+                      data?.data.data.attributes.distance_rulers.data?.map((row: any, key: any) => (
                         <TableRow hover key={row.id} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
                           <TableCell sx={{ pl: 3 }} component="th" scope="row">
                             {row.attributes.name}
@@ -100,7 +100,7 @@ const VillaContent = () => {
                   <TableBody>
                     {isLoading && <CircularProgress />}
                     {data &&
-                      data?.data.data.attributes.price_tables.data.map((row: any, key: any) => (
+                      data?.data.data.attributes.price_tables.data?.map((row: any, key: any) => (
                         <TableRow hover key={row.id} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
                           <TableCell sx={{ pl: 3 }} component="th" scope="row">
                             {row.attributes.name}
@@ -127,7 +127,7 @@ const VillaContent = () => {
                   <TableBody>
                     {isLoading && <CircularProgress />}
                     {data &&
-                      data?.data.data.attributes.categories.data.map((row: any, key: any) => (
+                      data?.data.data.attributes.categories.data?.map((row: any, key: any) => (
                         <TableRow hover key={row.id} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
                           <TableCell sx={{ pl: 3 }} component="th" scope="row">
                             {row.attributes.name}
@@ -152,7 +152,7 @@ const VillaContent = () => {
                   <TableBody>
                     {isLoading && <CircularProgress />}
                     {data &&
-                      data?.data.data.attributes.feature.map((row: any, key: any) => (
+                      data?.data.data.attributes.feature?.map((row: any, key: any) => (
                         <TableRow hover key={row.name} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
                           <TableCell sx={{ pl: 3 }} component="th" scope="row">
                             {row.name} {'['} {row.values.map((row1: any) => row1 + ', ')} {']'}
