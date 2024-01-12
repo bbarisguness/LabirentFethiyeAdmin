@@ -19,15 +19,11 @@ const ProjectRelease = () => {
   let month = newDate.getMonth() + 1;
   let year = newDate.getFullYear();
   let dateNow = `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`;
-  //console.log(dateNow);
-  //console.log(`${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`);
 
   const navigate = useNavigate();
 
   const { data, isLoading } = useDailyReservationAction(dateNow);
-  //console.log(data?.data.data);
-  if (isLoading) {
-  }
+
   return (
     <MainCard title="Bugün Giriş ve Çıkışlar">
       <Grid container spacing={1.5}>

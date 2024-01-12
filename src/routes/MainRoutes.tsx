@@ -16,6 +16,8 @@ import ReservationCalendar from 'pages/reservation/calendar';
 import VillaContent from 'pages/villa/components/content';
 import ReservationShow from 'pages/reservation/show';
 import ReservationInvoice from 'pages/reservation/invoice';
+import VillaAvailableDate from 'pages/villa/components/availableDate';
+import StaticPageList from 'pages/website/staticpage/list';
 //import Default from 'pages/dashboard/default';
 
 // pages routing
@@ -56,7 +58,10 @@ const MainRoutes = {
               path: 'price',
               element: <VillaPrice />
             },
-
+            {
+              path: 'available-dates',
+              element: <VillaAvailableDate />
+            },
             {
               path: 'content',
               element: <VillaContent />
@@ -84,6 +89,32 @@ const MainRoutes = {
         {
           path: 'list',
           element: <ReservationList />
+        },
+        {
+          path: 'show/:id',
+          element: <ReservationShow />
+        },
+        {
+          path: 'invoice/:id',
+          element: <ReservationInvoice />
+        },
+        {
+          path: 'calendar',
+          element: <ReservationCalendar />
+        }
+      ]
+    },
+    {
+      path: 'website',
+      element: (
+        <AuthGuard>
+          <MainLayout />
+        </AuthGuard>
+      ),
+      children: [
+        {
+          path: 'static-page/list',
+          element: <StaticPageList />
         },
         {
           path: 'show/:id',

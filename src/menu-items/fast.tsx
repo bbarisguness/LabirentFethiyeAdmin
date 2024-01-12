@@ -27,20 +27,6 @@ const fast: NavItemType = {
       type: 'item',
       url: '/',
       icon: icons.widgets
-    },
-    {
-      id: 'fast-daily',
-      title: 'Günlük İşlemler',
-      type: 'item',
-      url: '#',
-      icon: icons.widgets
-    },
-    {
-      id: 'fast-reservation',
-      title: 'Yeni Rezervasyon',
-      type: 'item',
-      url: '#',
-      icon: icons.calendar
     }
   ]
 };
