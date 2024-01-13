@@ -25,7 +25,7 @@ const reservation: NavItemType = {
       id: 'fast-reservation',
       title: 'Yeni Rezervasyon',
       type: 'item',
-      url: '#',
+      url: '/reservation/add',
       icon: icons.calendar
     },
     {

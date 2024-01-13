@@ -16,12 +16,11 @@ import { PopupTransition } from 'components/@extended/Transitions';
 
 // third-party
 import { useNavigate, useLocation } from 'react-router-dom';
-import { MouseEvent, useState } from 'react';
+import { useState } from 'react';
 // project-imports
 import MainCard from 'components/MainCard';
 import useReservations from 'hooks/reservation/useReservations';
-import IconButton from 'components/@extended/IconButton';
-import { Add, Edit, Eye } from 'iconsax-react';
+import { Add } from 'iconsax-react';
 import Moment from 'react-moment';
 import AddReservationForm from './component/addForm';
 
@@ -85,10 +84,9 @@ const ReservationList = () => {
           <TableHead>
             <TableRow>
               <TableCell sx={{ pl: 3 }}>Müşteri</TableCell>
-              <TableCell align="center">Check-In</TableCell>
-              <TableCell align="center">Check-Out</TableCell>
-              <TableCell align="center">Toplam Tutar</TableCell>
-              <TableCell align="right"></TableCell>
+              <TableCell align="right">Check-In</TableCell>
+              <TableCell align="right">Check-Out</TableCell>
+              <TableCell align="right">Toplam Tutar</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,22 +97,13 @@ const ReservationList = () => {
                   <TableCell sx={{ pl: 3 }} component="th" scope="row">
                     {row.attributes.reservation_infos.data[0].attributes.name} {row.attributes.reservation_infos.data[0].attributes.surname}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="right">
                     <Moment format="DD/MM/YYYY">{row.attributes.checkIn}</Moment>
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="right">
                     <Moment format="DD/MM/YYYY">{row.attributes.checkOut}</Moment>
                   </TableCell>
-                  <TableCell align="center">{row.attributes.total + ' TL'}</TableCell>
-
-                  <TableCell align="right">
-                    <IconButton color="secondary" onClick={(e: MouseEvent<HTMLButtonElement>) => {}}>
-                      <Eye />
-                    </IconButton>
-                    <IconButton color="secondary" onClick={(e: MouseEvent<HTMLButtonElement>) => {}}>
-                      <Edit />
-                    </IconButton>
-                  </TableCell>
+                  <TableCell align="right">{row.attributes.total + ' TL'}</TableCell>
                 </TableRow>
               ))}
           </TableBody>

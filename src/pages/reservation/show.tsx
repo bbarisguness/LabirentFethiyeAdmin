@@ -4,13 +4,22 @@ import MainCard from 'components/MainCard';
 import { useParams } from 'react-router';
 import { Grid, Typography } from '@mui/material';
 
-import { CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Dialog, Button, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import useReservationDetail from 'hooks/reservation/useReservationDetail';
+import { Add } from 'iconsax-react';
+import { useState } from 'react';
+import { PopupTransition } from 'components/@extended/Transitions';
+import AddCustomerForm from './component/addCustomer';
 
 const ReservationShow = () => {
   const params = useParams();
 
   const { data, isLoading } = useReservationDetail(params.id as string);
+
+  const [add, setAdd] = useState<boolean>(false);
+  const handleAdd = () => {
+    setAdd(!add);
+  };
 
   return (
     <MainCard title="Rezervasyon Detayı" border={false}>
@@ -40,7 +49,30 @@ const ReservationShow = () => {
               </MainCard>
             </Grid>
             <Grid item xs={12}>
-              <MainCard title="Misafirler" content={false} cardHeaderStyle={{ background: 'rgb(206 217 255)' }}>
+              <MainCard
+                title="Misafirler"
+                content={false}
+                cardHeaderStyle={{ background: 'rgb(206 217 255)' }}
+                secondary={
+                  <>
+                    <Button variant="contained" startIcon={<Add />} onClick={handleAdd} size="medium">
+                      Misafir Ekle
+                    </Button>
+                  </>
+                }
+              >
+                <Dialog
+                  maxWidth="sm"
+                  TransitionComponent={PopupTransition}
+                  keepMounted
+                  fullWidth
+                  onClose={handleAdd}
+                  open={add}
+                  sx={{ '& .MuiDialog-paper': { p: 0 }, transition: 'transform 225ms' }}
+                  aria-describedby="alert-dialog-slide-description"
+                >
+                  <AddCustomerForm onCancel={handleAdd} />
+                </Dialog>
                 <TableContainer>
                   <Table sx={{ minWidth: 350 }} aria-label="simple table">
                     <TableHead>

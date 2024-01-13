@@ -16,7 +16,7 @@ export type ColorProps =
   | SliderProps['color']
   | TooltipColor;
 export type AvatarTypeProps = 'filled' | 'outlined' | 'combined';
-export type SizeProps = 'badge' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type SizeProps = 'badge' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 export type ExtendedStyleProps = {
   color: ColorProps;
   theme: Theme;

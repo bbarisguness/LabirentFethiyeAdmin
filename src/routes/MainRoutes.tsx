@@ -18,6 +18,7 @@ import ReservationShow from 'pages/reservation/show';
 import ReservationInvoice from 'pages/reservation/invoice';
 import VillaAvailableDate from 'pages/villa/components/availableDate';
 import StaticPageList from 'pages/website/staticpage/list';
+import ReservationCreate from 'pages/reservation/add';
 //import Default from 'pages/dashboard/default';
 
 // pages routing
@@ -97,6 +98,10 @@ const MainRoutes = {
         {
           path: 'invoice/:id',
           element: <ReservationInvoice />
+        },
+        {
+          path: 'add',
+          element: <ReservationCreate />
         },
         {
           path: 'calendar',

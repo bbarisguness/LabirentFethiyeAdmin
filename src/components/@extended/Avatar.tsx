@@ -106,6 +106,16 @@ function getSizeStyle(size?: SizeProps) {
           height: 36
         }
       };
+    case 'xxl':
+      return {
+        fontSize: '1.5rem',
+        width: 120,
+        height: 120,
+        '& svg': {
+          width: 36,
+          height: 36
+        }
+      };
     case 'md':
     default:
       return {
