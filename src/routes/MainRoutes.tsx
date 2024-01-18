@@ -13,6 +13,8 @@ import VillaGallery from 'pages/villa/components/gallery';
 import VillaFile from 'pages/villa/components/file';
 import ReservationList from 'pages/reservation/list';
 import ReservationCalendar from 'pages/reservation/calendar';
+import VillaCreate from 'pages/villa/create';
+import VillaUpdate from 'pages/villa/update';
 
 
 // pages routing
@@ -40,9 +42,18 @@ const MainRoutes = {
                 element: <VillaList />
             },
             {
+                path:"create",
+                element: <VillaCreate />
+            },
+            {
+                path:"update/:id",
+                element: <VillaUpdate />
+            },
+            {
                 path:"show/:id",
                 element: <VillaShow />,
                 children:[
+
                     {
                         path:"summary",
                         element: <VillaSummary />

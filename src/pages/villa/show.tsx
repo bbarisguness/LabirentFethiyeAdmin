@@ -1,12 +1,12 @@
 // project-imports
 import MainCard from 'components/MainCard';
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs,Button } from '@mui/material';
 import { Profile, Calendar, DollarCircle, Image, Folder } from 'iconsax-react';
 
 import { useEffect, useState, SyntheticEvent } from 'react';
 import { useLocation, Link, Outlet } from 'react-router-dom';
 
-import { useParams } from 'react-router';
+import { useParams,useNavigate } from 'react-router';
 
 const VillaShow = () => {
   //const theme = useTheme();
@@ -58,8 +58,15 @@ const VillaShow = () => {
   const handleChange = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  const navigate = useNavigate();
   return (
-    <MainCard title="Villa Detayı" border={false}>
+    <MainCard title="Villa Detayı" border={false} secondary={
+        <>
+            <Button variant="contained" onClick={() => navigate("/villa/update/" + params.id)} size="small">
+                Güncelle
+            </Button>
+        </>
+    }>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', width: '100%' }}>
         <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto" aria-label="account profile tab">
           <Tab

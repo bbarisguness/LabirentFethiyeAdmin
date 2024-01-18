@@ -4,7 +4,7 @@ export default function useReservations(params:any) {
 
     const data = useQuery({
         queryKey: ['reservation-list'],
-        queryFn: () => apiRequest("GET", "/AdminReservation/GetAll?page=" + params.Page + "&page=" + params.Size),
+        queryFn: () => apiRequest("GET", "/reservations"),
     });
     return data;
   }
