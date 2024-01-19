@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router';
 // project-imports
 import MainCard from 'components/MainCard';
 import useVillaSummary from 'hooks/villa/useVillaSummary';
+import Avatar from 'components/@extended/Avatar';
 
 const VillaSummary = () => {
   const params = useParams();
@@ -17,8 +18,10 @@ const VillaSummary = () => {
   const villa = data?.data.data;
 
   //console.log(villa);
+  //console.log(villa.attributes.photos);
 
   const navigate = useNavigate();
+  //const avatarImage = require.context('assets/images/users', true);
 
   return (
     <Grid container spacing={3}>
@@ -33,6 +36,7 @@ const VillaSummary = () => {
                       <Chip label="Aktif" size="small" color="success" />
                     </Stack>
                     <Stack spacing={2.5} alignItems="center">
+                      <Avatar alt="Avatar 1" size="xxl" src={villa?.attributes.photos.data[0].attributes.photo.data.attributes.url} />
                       <Stack spacing={0.5} alignItems="center">
                         <Typography variant="h5">{villa.attributes.name}</Typography>
                         <Typography color="secondary">{villa.attributes.region}</Typography>
@@ -70,7 +74,7 @@ const VillaSummary = () => {
                           <Sms size={18} />
                         </ListItemIcon>
                         <ListItemSecondaryAction>
-                          <Typography align="right">anshan.dh81@gmail.com</Typography>
+                          <Typography align="right">Villa Sahibi Adı Soyadı</Typography>
                         </ListItemSecondaryAction>
                       </ListItem>
                       <ListItem>
@@ -78,7 +82,7 @@ const VillaSummary = () => {
                           <CallCalling size={18} />
                         </ListItemIcon>
                         <ListItemSecondaryAction>
-                          <Typography align="right">(+1-876) 8654 239 581</Typography>
+                          <Typography align="right">0532 000 00 00</Typography>
                         </ListItemSecondaryAction>
                       </ListItem>
                       <ListItem>
@@ -86,7 +90,7 @@ const VillaSummary = () => {
                           <Gps size={18} />
                         </ListItemIcon>
                         <ListItemSecondaryAction>
-                          <Typography align="right">New York</Typography>
+                          <Typography align="right">Fethiye</Typography>
                         </ListItemSecondaryAction>
                       </ListItem>
                     </List>
@@ -110,8 +114,9 @@ const VillaSummary = () => {
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ pl: 3 }}>Check-In</TableCell>
-                      <TableCell align="center">Check-Out</TableCell>
+                      <TableCell sx={{ pl: 3 }}>Misafir</TableCell>
+                      <TableCell align="right">Check-In</TableCell>
+                      <TableCell align="right">Check-Out</TableCell>
                       <TableCell align="right">Toplam Tutar</TableCell>
                     </TableRow>
                   </TableHead>
@@ -120,10 +125,14 @@ const VillaSummary = () => {
                       villa.attributes.reservations.data.map((row: any) => {
                         return (
                           <TableRow hover key={row.id} onClick={() => navigate('#')}>
-                            <TableCell align="left">
+                            <TableCell sx={{ pl: 3 }} component="th" scope="row">
+                              {row.attributes.reservation_infos?.data[0]?.attributes.name}{' '}
+                              {row.attributes.reservation_infos?.data[0]?.attributes.surname}
+                            </TableCell>
+                            <TableCell align="right">
                               <Moment format="DD/MM/YYYY">{row.attributes.checkIn}</Moment>
                             </TableCell>
-                            <TableCell align="center">
+                            <TableCell align="right">
                               <Moment format="DD/MM/YYYY">{row.attributes.checkOut}</Moment>
                             </TableCell>
                             <TableCell align="right">{row.attributes.total} TL</TableCell>

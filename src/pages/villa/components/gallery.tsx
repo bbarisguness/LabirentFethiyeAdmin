@@ -91,6 +91,3 @@ const VillaGallery = () => {
         </Grid>    
     )
 }
-
-
-export default VillaGallery;

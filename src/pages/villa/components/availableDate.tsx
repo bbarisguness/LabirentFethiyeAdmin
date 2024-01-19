@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid,Typography } from '@mui/material';
 
 import MainCard from 'components/MainCard';
 import {
@@ -20,7 +20,7 @@ import { LabelKeyObject } from 'react-csv/lib/core';
 // project-imports
 import { CSVExport } from 'components/third-party/ReactTable';
 //import useVillas from 'hooks/villa/useVillas';
-import useVillaReservation from 'hooks/villa/useVillaReservation';
+import useVillaAvailableDate from 'hooks/villa/useVillaAvailableDate';
 
 export const header: LabelKeyObject[] = [
   { label: 'Dessert (100g serving)', key: 'name' },
@@ -33,7 +33,7 @@ export const header: LabelKeyObject[] = [
 ];
 
 const RECORD_SIZE = 15;
-const VillaReservation = () => {
+const VillaAvailableDate = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
@@ -41,9 +41,23 @@ const VillaReservation = () => {
 
   const params = useParams();
 
-  const { data, isLoading, refetch } = useVillaReservation(params.id as string);
+  const { data, isLoading, refetch } = useVillaAvailableDate(params.id as string);
 
-  //console.log(data);
+  // Burada müsait tarihler listesi oluşturulacak
+
+  //let length = data?.data.data.length;
+  //console.log(length);
+
+  // let dates;
+
+  // data?.data.data.map(
+  //   (row: any, index: any) =>
+  //     (dates[index] = {
+  //       checkIn: row.checkIn
+  //     })
+  // );
+
+  // console.log('sonuç : ' + dates);
 
   const handlePageChange = (event: any, newPage: any) => {
     // update query parameters with new page number
@@ -60,14 +74,17 @@ const VillaReservation = () => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <MainCard content={false} secondary={<CSVExport data={[]} headers={header} filename="basic-table-data.csv" />}>
+              <Typography color="secondary" m={5}>
+                <b>* Burada sadece müsait tarihler listelenecek. Şuanda Liste yanlış. Düzenleme yapılacak. </b>
+              </Typography>
+
               <TableContainer>
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ pl: 3 }}>Müşteri</TableCell>
-                      <TableCell align="right">CheckIn</TableCell>
-                      <TableCell align="right">CheckOut</TableCell>
-                      <TableCell align="right">Total</TableCell>
+                      <TableCell align="left">CheckIn</TableCell>
+                      <TableCell align="left">CheckOut</TableCell>
+                      <TableCell align="left">Days</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -75,13 +92,9 @@ const VillaReservation = () => {
                     {data &&
                       data?.data.data.map((row: any, key: any) => (
                         <TableRow hover key={row.id} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
-                          <TableCell sx={{ pl: 3 }} component="th" scope="row">
-                            {row.attributes.reservation_infos.data[0]?.attributes.name}{' '}
-                            {row.attributes.reservation_infos.data[0]?.attributes.surname}
-                          </TableCell>
-                          <TableCell align="right">{row.attributes.checkIn}</TableCell>
-                          <TableCell align="right">{row.attributes.checkOut}</TableCell>
-                          <TableCell align="right">{row.attributes.total} TL</TableCell>
+                          <TableCell align="left">{row.attributes.checkIn}</TableCell>
+                          <TableCell align="left">{row.attributes.checkOut}</TableCell>
+                          <TableCell align="left">{row.attributes.total} TL</TableCell>
                         </TableRow>
                       ))}
                   </TableBody>
@@ -104,4 +117,4 @@ const VillaReservation = () => {
   );
 };
 
-export default VillaReservation;
+export default VillaAvailableDate;

@@ -1,5 +1,5 @@
 // assets
-import { Building3, PresentionChart,Calendar2, DocumentCopy, Monitor } from 'iconsax-react';
+import { Building3, PresentionChart, Calendar2, DocumentCopy, Monitor } from 'iconsax-react';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -17,20 +17,27 @@ const icons = {
 
 const website: NavItemType = {
   id: 'group-website',
-  title: "Web Site İşlemleri",
+  title: 'Web Site İşlemleri',
   icon: icons.widgets,
   type: 'group',
   children: [
     {
+      id: 'website-staticpage',
+      title: 'Static Sayfalar',
+      type: 'item',
+      url: '/website/static-page/list',
+      icon: icons.widgets
+    },
+    {
       id: 'website-genel',
-      title: "Genel Ayarlar",
+      title: 'Genel Ayarlar',
       type: 'item',
       url: '#',
       icon: icons.widgets
     },
     {
       id: 'website-menu',
-      title: "Menü Ayarları",
+      title: 'Menü Ayarları',
       type: 'item',
       url: '#',
       icon: icons.widgets

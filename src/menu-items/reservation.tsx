@@ -1,5 +1,5 @@
 // assets
-import { Building3, PresentionChart,Home3,Calendar1,Calendar2 } from 'iconsax-react';
+import { Building3, PresentionChart, Home3, Calendar1, Calendar2 } from 'iconsax-react';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -17,23 +17,23 @@ const icons = {
 
 const reservation: NavItemType = {
   id: 'group-tesis',
-  title: "Rezervasyon İşlemleri",
+  title: 'Rezervasyon İşlemleri',
   icon: icons.widgets,
   type: 'group',
   children: [
     {
+      id: 'fast-reservation',
+      title: 'Yeni Rezervasyon',
+      type: 'item',
+      url: '/reservation/add',
+      icon: icons.calendar
+    },
+    {
       id: 'reservation-list',
-      title: "Rezervasyon Listesi",
+      title: 'Rezervasyon Listesi',
       type: 'item',
       url: '/reservation/list',
       icon: icons.list
-    },
-    {
-      id: 'reservation-calendar',
-      title: "Rezervasyon Takvimi",
-      type: 'item',
-      url: '/reservation/calendar',
-      icon: icons.calendar
     }
   ]
 };

@@ -11,7 +11,7 @@ import website from './website';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [fast,tesis, reservation,muhasebe,website]
+  items: [fast, tesis, reservation, muhasebe, website]
 };
 
 export default menuItems;
