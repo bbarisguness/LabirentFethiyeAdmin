@@ -13,6 +13,10 @@ import VillaGallery from 'pages/villa/components/gallery';
 import VillaFile from 'pages/villa/components/file';
 import ReservationList from 'pages/reservation/list';
 import ReservationCalendar from 'pages/reservation/calendar';
+
+import VillaCreate from 'pages/villa/create';
+import VillaUpdate from 'pages/villa/update';
+
 import VillaContent from 'pages/villa/components/content';
 import ReservationShow from 'pages/reservation/show';
 import ReservationInvoice from 'pages/reservation/invoice';
@@ -44,6 +48,14 @@ const MainRoutes = {
           element: <VillaList />
         },
         {
+          path: 'create',
+          element: <VillaCreate />
+        },
+        {
+          path: 'update/:id',
+          element: <VillaUpdate />
+        },
+        {
           path: 'show/:id',
           element: <VillaShow />,
           children: [
@@ -60,22 +72,91 @@ const MainRoutes = {
               element: <VillaPrice />
             },
             {
-              path: 'available-dates',
-              element: <VillaAvailableDate />
-            },
-            {
-              path: 'content',
-              element: <VillaContent />
-            },
-            {
               path: 'gallery',
               element: <VillaGallery />
             },
             {
               path: 'file',
               element: <VillaFile />
+            },
+            {
+              path: 'content',
+              element: <VillaContent />
+            },
+            {
+              path: 'available-dates',
+              element: <VillaAvailableDate />
             }
+            // {
+            //   path: 'show/:id',
+            //   element: <VillaShow />,
+            //   children: [
+            //     {
+            //       path: 'summary',
+            //       element: <VillaSummary />
+            //     },
+            //     {
+            //       path: 'reservation',
+            //       element: <VillaReservation />
+            //     },
+            //     {
+            //       path: 'price',
+            //       element: <VillaPrice />
+            //     },
+            //     {
+            //       path: 'gallery',
+            //       element: <VillaGallery />
+            //     },
+            //     {
+            //       path: 'file',
+            //       element: <VillaFile />
+            //     },
+            //     {
+            //       path: 'content',
+            //       element: <VillaContent />
+            //     },
+            //     {
+            //       path: 'available-dates',
+            //       element: <VillaAvailableDate />
+            //     }
+            //   ]
+            // }
           ]
+        },
+        {
+          path: 'reservation',
+          element: (
+            <AuthGuard>
+              <MainLayout />
+            </AuthGuard>
+          )
+          // ,
+          // children: [
+          //   {
+          //     path: 'reservation',
+          //     element: <VillaReservation />
+          //   },
+          //   {
+          //     path: 'price',
+          //     element: <VillaPrice />
+          //   },
+          //   {
+          //     path: 'available-dates',
+          //     element: <VillaAvailableDate />
+          //   },
+          //   {
+          //     path: 'content',
+          //     element: <VillaContent />
+          //   },
+          //   {
+          //     path: 'gallery',
+          //     element: <VillaGallery />
+          //   },
+          //   {
+          //     path: 'file',
+          //     element: <VillaFile />
+          //   }
+          // ]
         }
       ]
     },

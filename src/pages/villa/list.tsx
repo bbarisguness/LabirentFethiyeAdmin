@@ -8,16 +8,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TablePagination
+  TablePagination,
+  Button
 } from '@mui/material';
+
+
 // third-party
 import { useNavigate, useLocation } from 'react-router-dom';
+import {  Add } from 'iconsax-react';
 
 import { LabelKeyObject } from 'react-csv/lib/core';
 
 // project-imports
 import MainCard from 'components/MainCard';
-import { CSVExport } from 'components/third-party/ReactTable';
 import useVillas from 'hooks/villa/useVillas';
 
 export const header: LabelKeyObject[] = [
@@ -54,10 +57,15 @@ const VillaList = () => {
     }, 100);
   };
 
-  //console.log(data?.data);
-
   return (
-    <MainCard content={false} title="Villa Listesi" secondary={<CSVExport data={[]} headers={header} filename="basic-table-data.csv" />}>
+    <MainCard content={false} title="Villa Listesi" secondary={
+        <>
+            <Button variant="contained" startIcon={<Add />} onClick={() => navigate("/villa/create")} size="small">
+                Villa Ekle
+            </Button>
+        </>
+    }>
+
       <TableContainer>
         <Table sx={{ minWidth: 350 }} aria-label="simple table">
           <TableHead>
