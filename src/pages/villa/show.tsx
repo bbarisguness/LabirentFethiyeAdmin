@@ -7,7 +7,7 @@ import { Profile, Calendar, DollarCircle, Image, Folder, ClipboardText } from 'i
 import { useEffect, useState, SyntheticEvent } from 'react';
 import { useLocation, Link, Outlet } from 'react-router-dom';
 
-import { useParams,useNavigate } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 
 const VillaShow = () => {
   //const theme = useTheme();
@@ -61,13 +61,17 @@ const VillaShow = () => {
   };
   const navigate = useNavigate();
   return (
-    <MainCard title="Villa Detayı" border={false} secondary={
+    <MainCard
+      title="Villa Detayı"
+      border={false}
+      secondary={
         <>
-            <Button variant="contained" onClick={() => navigate("/villa/update/" + params.id)} size="small">
-                Güncelle
-            </Button>
+          <Button variant="contained" onClick={() => navigate('/villa/update/' + params.id)} size="small">
+            Güncelle
+          </Button>
         </>
-    }>
+      }
+    >
       <Box sx={{ borderBottom: 1, borderColor: 'divider', width: '100%' }}>
         <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto" aria-label="account profile tab">
           <Tab

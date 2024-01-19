@@ -36,7 +36,7 @@ const VillaSummary = () => {
                       <Chip label="Aktif" size="small" color="success" />
                     </Stack>
                     <Stack spacing={2.5} alignItems="center">
-                      <Avatar alt="Avatar 1" size="xxl" src={villa?.attributes.photos.data[0].attributes.photo.data.attributes.url} />
+                      <Avatar alt="Avatar 1" size="xxl" src={villa?.attributes.photos?.data[0]?.attributes.photo.data.attributes.url} />
                       <Stack spacing={0.5} alignItems="center">
                         <Typography variant="h5">{villa.attributes.name}</Typography>
                         <Typography color="secondary">{villa.attributes.region}</Typography>
