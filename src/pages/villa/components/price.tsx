@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid, Button, Box } from '@mui/material';
 
 import MainCard from 'components/MainCard';
 import FullCalendar from '@fullcalendar/react';
@@ -32,7 +32,7 @@ const VillaPrice = () => {
   const convertData = (data: any) => {
     var reservations = data?.data.data;
 
-console.log(reservations);
+    console.log(reservations);
 
     var newArr = reservations.map((item: any) => {
       return {
@@ -59,6 +59,12 @@ console.log(reservations);
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <MainCard>
+              <Box sx={{ width: '100%', marginBottom: 2 }}>
+                <Button variant="contained" onClick={() => alert('modal')} size="medium">
+                  Fiyat Ekle
+                </Button>
+              </Box>
+
               <FullCalendar
                 locale={trLocale}
                 weekends

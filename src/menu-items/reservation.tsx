@@ -34,6 +34,13 @@ const reservation: NavItemType = {
       type: 'item',
       url: '/reservation/list',
       icon: icons.list
+    },
+    {
+      id: 'reservation-available',
+      title: 'Müsaitlik Listesi',
+      type: 'item',
+      url: '/reservation/availablelist',
+      icon: icons.list
     }
   ]
 };

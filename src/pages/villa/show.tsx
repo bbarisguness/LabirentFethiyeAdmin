@@ -8,6 +8,7 @@ import { useEffect, useState, SyntheticEvent } from 'react';
 import { useLocation, Link, Outlet } from 'react-router-dom';
 
 import { useParams, useNavigate } from 'react-router';
+import useVillaSummary from 'hooks/villa/useVillaSummary';
 
 const VillaShow = () => {
   //const theme = useTheme();
@@ -60,9 +61,13 @@ const VillaShow = () => {
     setValue(newValue);
   };
   const navigate = useNavigate();
+
+  const { data } = useVillaSummary(params.id as string);
+  const villa = data?.data.data;
+
   return (
     <MainCard
-      title="Villa Detayı"
+      title={villa?.attributes.name}
       border={false}
       secondary={
         <>

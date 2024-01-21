@@ -11,7 +11,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Button
 } from '@mui/material';
 
 import { LabelKeyObject } from 'react-csv/lib/core';
@@ -172,29 +173,29 @@ const VillaContent = () => {
                 <Typography variant="h6">Özellikler</Typography>
               </AccordionSummary>
               <AccordionDetails>
-              <MainCard title="Özellikler" content={false} cardHeaderStyle={{ background: 'rgb(206 217 255)' }}>
-                <TableContainer>
-                  <Table sx={{ minWidth: 350 }} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ pl: 3 }}>Name</TableCell>
-                        {/* <TableCell align="right">Value</TableCell> */}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {isLoading && <CircularProgress />}
-                      {data &&
-                        data?.data.data.attributes.feature?.map((row: any, key: any) => (
-                          <TableRow hover key={row.name} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
-                            <TableCell sx={{ pl: 3 }} component="th" scope="row">
-                              {row.name} {'['} {row.values.map((row1: any) => row1 + ', ')} {']'}
-                            </TableCell>
-                            {/* <TableCell align="right"> </TableCell> */}
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                <MainCard title="Özellikler" content={false} cardHeaderStyle={{ background: 'rgb(206 217 255)' }}>
+                  <TableContainer>
+                    <Table sx={{ minWidth: 350 }} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ pl: 3 }}>Name</TableCell>
+                          {/* <TableCell align="right">Value</TableCell> */}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {isLoading && <CircularProgress />}
+                        {data &&
+                          data?.data.data.attributes.feature?.map((row: any, key: any) => (
+                            <TableRow hover key={row.name} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
+                              <TableCell sx={{ pl: 3 }} component="th" scope="row">
+                                {row.name} {'['} {row.values.map((row1: any) => row1 + ', ')} {']'}
+                              </TableCell>
+                              {/* <TableCell align="right"> </TableCell> */}
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </MainCard>
               </AccordionDetails>
             </Accordion>
@@ -226,7 +227,18 @@ const VillaContent = () => {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <MainCard title="Mesafe Cetveli" content={false} cardHeaderStyle={{ background: 'rgb(206 217 255)' }}>
+            <MainCard
+              title="Mesafe Cetveli"
+              content={false}
+              cardHeaderStyle={{ background: 'rgb(206 217 255)' }}
+              secondary={
+                <>
+                  <Button variant="contained" onClick={() => alert('modal')} size="medium">
+                    Mesafe Ekle
+                  </Button>
+                </>
+              }
+            >
               <TableContainer>
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
                   <TableHead>
@@ -254,7 +266,18 @@ const VillaContent = () => {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <MainCard title="Fiyat Tablosu" content={false} cardHeaderStyle={{ background: 'rgb(206 217 255)' }}>
+            <MainCard
+              title="Fiyat Tablosu"
+              content={false}
+              cardHeaderStyle={{ background: 'rgb(206 217 255)' }}
+              secondary={
+                <>
+                  <Button variant="contained" onClick={() => alert('modal')} size="medium">
+                    Fiyat Ekle
+                  </Button>
+                </>
+              }
+            >
               <TableContainer>
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
                   <TableHead>
@@ -308,7 +331,18 @@ const VillaContent = () => {
             </MainCard>
           </Grid>
           <Grid item xs={12}>
-            <MainCard title="Özellikler" content={false} cardHeaderStyle={{ background: 'rgb(206 217 255)' }}>
+            <MainCard
+              title="Özellikler"
+              content={false}
+              cardHeaderStyle={{ background: 'rgb(206 217 255)' }}
+              secondary={
+                <>
+                  <Button variant="contained" onClick={() => alert('modal')} size="medium">
+                    Özellik Ekle
+                  </Button>
+                </>
+              }
+            >
               <TableContainer>
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
                   <TableHead>

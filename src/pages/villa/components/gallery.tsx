@@ -1,4 +1,4 @@
-import { Grid, List, ListItem, CardMedia } from '@mui/material';
+import { Grid, List, ListItem, CardMedia, Box, Button } from '@mui/material';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import useVillaPhoto from 'hooks/villa/useVillaPhoto';
 import { useParams } from 'react-router';
@@ -60,6 +60,11 @@ const VillaGallery = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
+        <Box sx={{ width: '100%', marginLeft: 2 }}>
+          <Button variant="contained" onClick={() => alert('modal')} size="medium">
+            Resim Ekle
+          </Button>
+        </Box>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="droppable">
             {(provided) => (

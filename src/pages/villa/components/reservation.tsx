@@ -10,7 +10,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TablePagination
+  TablePagination,
+  Button,
+  Box
 } from '@mui/material';
 
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -60,6 +62,12 @@ const VillaReservation = () => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <MainCard content={false} secondary={<CSVExport data={[]} headers={header} filename="basic-table-data.csv" />}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider', width: '100%', margin: 2 }}>
+                <Button variant="contained" onClick={() => alert('modal')} size="medium">
+                  Yeni Rezervasyon Oluştur
+                </Button>
+              </Box>
+
               <TableContainer>
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
                   <TableHead>
