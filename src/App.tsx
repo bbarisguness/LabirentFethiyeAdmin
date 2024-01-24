@@ -21,12 +21,11 @@ import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 // import { Auth0Provider as AuthProvider } from 'contexts/Auth0Context';
 
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const App = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient();
   useEffect(() => {
     dispatch(fetchMenu()).then(() => {
       setLoading(false);
@@ -37,22 +36,22 @@ const App = () => {
 
   return (
     <ThemeCustomization>
-        <QueryClientProvider client={queryClient}>
-      <RTLLayout>
-        <Locales>
-          <ScrollTop>
-            <AuthProvider>
-              <>
-                <Notistack>
-                  <Routes />
-     
-                  <Snackbar />
-                </Notistack>
-              </>
-            </AuthProvider>
-          </ScrollTop>
-        </Locales>
-      </RTLLayout>
+      <QueryClientProvider client={queryClient}>
+        <RTLLayout>
+          <Locales>
+            <ScrollTop>
+              <AuthProvider>
+                <>
+                  <Notistack>
+                    <Routes />
+
+                    <Snackbar />
+                  </Notistack>
+                </>
+              </AuthProvider>
+            </ScrollTop>
+          </Locales>
+        </RTLLayout>
       </QueryClientProvider>
     </ThemeCustomization>
   );

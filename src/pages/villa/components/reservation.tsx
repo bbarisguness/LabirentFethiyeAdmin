@@ -12,7 +12,8 @@ import {
   TableRow,
   TablePagination,
   Button,
-  Box
+  Box,
+  Dialog
 } from '@mui/material';
 
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
@@ -23,6 +24,11 @@ import { LabelKeyObject } from 'react-csv/lib/core';
 import { CSVExport } from 'components/third-party/ReactTable';
 //import useVillas from 'hooks/villa/useVillas';
 import useVillaReservation from 'hooks/villa/useVillaReservation';
+import { useState } from 'react';
+
+import { PopupTransition } from 'components/@extended/Transitions';
+
+import ReservationCreate from 'pages/reservation/add';
 
 export const header: LabelKeyObject[] = [
   { label: 'Dessert (100g serving)', key: 'name' },
@@ -56,6 +62,12 @@ const VillaReservation = () => {
     }, 100);
   };
 
+  const [add, setAdd] = useState<boolean>(false);
+
+  const handleAdd = () => {
+    setAdd(!add);
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -63,10 +75,24 @@ const VillaReservation = () => {
           <Grid item xs={12}>
             <MainCard content={false} secondary={<CSVExport data={[]} headers={header} filename="basic-table-data.csv" />}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider', width: '100%', margin: 2 }}>
-                <Button variant="contained" onClick={() => alert('modal')} size="medium">
+                <Button variant="contained" onClick={handleAdd} size="medium">
                   Yeni Rezervasyon Oluştur
                 </Button>
               </Box>
+
+              <Dialog
+                maxWidth="sm"
+                TransitionComponent={PopupTransition}
+                keepMounted
+                fullWidth
+                onClose={handleAdd}
+                open={add}
+                sx={{ '& .MuiDialog-paper': { p: 0 }, transition: 'transform 225ms' }}
+                aria-describedby="alert-dialog-slide-description"
+              >
+                <ReservationCreate />
+                {/* <AddReservationForm onCancel={handleAdd} resFetch={refetch} /> */}
+              </Dialog>
 
               <TableContainer>
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
