@@ -2,7 +2,8 @@ import { dispatch } from 'store';
 import { useState } from 'react';
 
 // material-ui
-import { Button, FormControl, Grid, InputLabel, ListItemText, Select, Stack, TextField } from '@mui/material';
+//import { Button, FormControl, Grid, InputLabel, ListItemText, Select, Stack, TextField } from '@mui/material';
+import { Button, Grid, InputLabel, Stack, TextField } from '@mui/material';
 
 // project-imports
 import MainCard from 'components/MainCard';
@@ -13,16 +14,19 @@ import { openSnackbar } from 'store/reducers/snackbar';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import useCreateReservation from 'hooks/reservation/useCreateReservation';
+//import useCreateReservationInfo from 'hooks/reservation/useCreateReservationInfo';
 import { useParams } from 'react-router';
 
-import useVillas from 'hooks/villa/useVillas';
-import { MenuItem } from '@mui/material';
+//import useVillas from 'hooks/villa/useVillas';
+import useGetReservationPrices from 'hooks/reservation/useGetReservationPrices';
+//import { MenuItem } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import moment from 'moment';
+//import { data } from 'data/org-chart';
 /**
  * 'Enter your email'
  * yup.string Expected 0 arguments, but got 1 */
@@ -55,7 +59,7 @@ const ReservationAdd = () => {
   const params = useParams();
 
   const { mutate } = useCreateReservation();
-
+  //const { mutate:createReservationInfo } = useCreateReservation();
   const formik = useFormik({
     initialValues: getInitialValues(),
     validationSchema: validationSchema,
@@ -72,7 +76,7 @@ const ReservationAdd = () => {
 
         mutate(
           {
-            //data: values
+            data: values
           },
           {
             onError: (error: any) => {
@@ -89,6 +93,11 @@ const ReservationAdd = () => {
               );
             },
             onSuccess: (res) => {
+              // createReservationInfo({data:info}, {
+              //   onError:(){},
+              //   onSuccess: (res) => {}
+              // })
+
               //navigate('/villa/show/' + res.data.data.id + '/summary');
               setSubmitting(false);
             }
@@ -100,30 +109,137 @@ const ReservationAdd = () => {
     }
   });
 
-  const { data } = useVillas({
-    Page: 1,
-    Size: 15
-  });
+  // function slug(name:string){
+  //   let url = name.toLowerCase().trim().replace('ş','s').replace('ğ','g').replace('?','')
+  //   return url;
+  // }
+
+  // const { data } = useVillas({
+  //   Page: 1,
+  //   Size: 15
+  // });
+
+  // if (date1 && date2) {
+  //   alert(moment(date1).format('YYYY-MM-DD'));
+  // }
+
+  // function getPrice(checkIn: Date, checkOut: Date) {
+  //   //let fakeDate: Date = checkIn;
+  //   // const [fakeDate, setFakeDate] = useState(checkIn);
+  //   // while (fakeDate < checkOut) {
+  //   //   //fakeDate = fakeDate.setDate(fakeDate.getDate() + 1);
+  //   //   setFakeDate(fakeDate.setDate(fakeDate.getDate() + 1));
+  //   // }
+  // }
 
   const [date1, setDate1] = useState(null);
   const [date2, setDate2] = useState(null);
 
-  // const [checkIns, setCheckIns] = useState('');
-  // const [checkOuts, setCheckOuts] = useState('');
-  //let checkIns, checkOuts;
-  if (date1 && date2) {
-    alert(moment(date1).format('YYYY-MM-DD'));
-    //checkIns = moment(date1).format('YYYY-MM-DD');
-    //checkOuts = moment(date2).format('YYYY-MM-DD');
-    // setCheckIns(moment(date1).format('YYYY-MM-DD').toString());
-    // setCheckOuts(moment(date2).format('YYYY-MM-DD').toString());
-  }
-  //alert('checkIn : ' + checkIns + ' || checkOut : ' + checkOuts);
-  //console.log('checkIn : ' + checkIns + ' || checkOut : ' + checkOuts);
+  const { data, refetch } = useGetReservationPrices({
+    VillaId: params.id,
+    CheckIn: moment(date1).format('YYYY-MM-DD'),
+    CheckOut: moment(date2).format('YYYY-MM-DD')
+  });
 
   const handlePrice = () => {
-    //alert('checkIn : ' + checkIns + ' || checkOut : ' + checkOuts + ' \nFiyat Sorgusu Sonucu Çalışacak..');
-    alert('sad');
+    // if (params.id) {
+    //   const datePrices = useGetReservationPrices(params.id, moment(date1).format('YYYY-MM-DD').toString(), moment(date2).format('YYYY-MM-DD').toString());
+    //  }
+    // alert(
+    //   'checkIn : ' +
+    //     moment(date1).format('YYYY-MM-DD') +
+    //     '\ncheckOut : ' +
+    //     moment(date2).format('YYYY-MM-DD') +
+    //     ' \nFiyat Sorgusu Sonucu Çalışacak..'
+    // );
+
+    //var async = require('async');
+    // var dates = ['2023-10-10', '2023-10-10', '2023-10-10'];
+
+    // async.each(
+    //   dates,
+    //   function (item, callback) {
+    //     console.log(item);
+    //     //
+    //     callback();
+    //   },
+    //   function () {
+    //     console.log('bitti');
+    //   }
+    // );
+
+    if (date1 && date2) {
+      var dates = [];
+      var datePrices: any = [];
+      //var fakeDate = new Date(moment(date1).format('YYYY-MM-DD')).setDate((new Date(moment(date1).format('YYYY-MM-DD')).getDate() - 1));
+      //var fakeDate = new Date(date1)
+      //var barisd = new Date(moment(date1).format('YYYY-MM-DD'));
+      //var barisd =  new Date(moment(date1).toDate().setDate(moment(date1).toDate().getDate() -1));
+      // alert('fake date : ' + moment(fakeDate).format('YYYY-MM-DD'))
+      // alert('date : ' + barisd)
+
+      //var checkInDate = new Date(moment(date1).toDate().setDate(moment(date1).toDate().getDate() -1));
+      //var checkOutDate = new Date(moment(date2).toDate().setDate(moment(date2).toDate().getDate() -1));
+      var checkInDate = moment(date1).toDate();
+      var checkOutDate = moment(date2).toDate();
+
+      var fakeDate = checkInDate;
+
+      while (fakeDate < checkOutDate) {
+        dates.push(moment(fakeDate).format('YYYY-MM-DD'));
+        //console.log(moment(fakeDate).format('YYYY-MM-DD'));
+
+        fakeDate = new Date(fakeDate.setDate(fakeDate.getDate() + 1));
+
+        //barisd = new Date(barisd.setDate(barisd.getDate() + 1));
+
+        //          dates.push(fakeDate);
+        // //         //fakeDate = new Date(fakeDate.setDate(fakeDate.getDate() + 1));
+        // //         fakeDate = new Date(moment(fakeDate).format('YYYY-MM-DD')).setDate(new Date(moment(fakeDate).format('YYYY-MM-DD')).getDate() + 1);
+      }
+
+      //console.log(dates);
+
+      // const { data } = useGetReservationPrices({ VillaId: 1, CheckIn: '2024-01-10', CheckOut: '2024-01-20' });
+
+      //console.log(data);
+
+      var async = require('async');
+
+      refetch();
+      if (data) console.log(data);
+      else refetch();
+
+      async.each(
+        dates,
+        function (item: any, callback: any) {
+          // tüm işlemler
+
+          datePrices.push({ day: item, price: 2500 });
+          callback();
+        },
+        function () {
+          //console.log('bitti');
+        }
+      );
+
+      //console.log(datePrices);
+      // while (date1 < date2) {
+      //   dates.push(moment(date1).format('YYYY-MM-DD'));
+      //   //setDate1((new Date(date1)).setDate(new Date(date1).getDate() + 1)));
+      //   //setDate1( new Date(date1).setDate(new Date(date1).getDate()) )
+      // }
+      //moment(date1).format('YYYY-MM-DD');
+
+      // const datePrices = [];
+      // var fakeDate = new Date(date1);
+
+      // while (fakeDate < new Date(date2)) {
+      //   datePrices.push({ day: fakeDate, price: 2000 });
+      //   fakeDate = new Date(fakeDate.setDate(fakeDate.getDate() + 1));
+      // }
+      // datePrices.map((row) => alert('day : ' + moment(row.day).format('YYYY-MM-DD') + '\nprice : ' + row.price));
+    }
   };
 
   return (
@@ -131,7 +247,7 @@ const ReservationAdd = () => {
       <MainCard title="Rezervasyon Ekle">
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={3}>
-            {!params.id && (
+            {/* {!params.id && (
               <Grid item xs={12}>
                 <InputLabel id="villa-categories-label" sx={{ marginBottom: 1 }}>
                   Villa Seçimi *
@@ -147,8 +263,8 @@ const ReservationAdd = () => {
                   </Select>
                 </FormControl>
               </Grid>
-            )}
-            <Grid item xs={5}>
+            )} */}
+            <Grid item xs={6}>
               <Stack spacing={1}>
                 <InputLabel htmlFor="checkIn">Giriş Tarihi *</InputLabel>
                 {/* <TextField
@@ -164,7 +280,7 @@ const ReservationAdd = () => {
                 <DatePicker value={date1} onChange={(newValue) => setDate1(newValue)} slotProps={{ textField: { fullWidth: true } }} />
               </Stack>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={6}>
               <Stack spacing={1}>
                 <InputLabel htmlFor="checkOut">Çıkış Tarihi *</InputLabel>
                 {/* <TextField
@@ -180,7 +296,7 @@ const ReservationAdd = () => {
                 <DatePicker value={date2} onChange={(newValue) => setDate2(newValue)} slotProps={{ textField: { fullWidth: true } }} />
               </Stack>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={12}>
               <Stack spacing={1}>
                 <Button variant="contained" type="button" size="medium" sx={{ marginTop: 4 }} onClick={handlePrice}>
                   Fiyat Sorgula
