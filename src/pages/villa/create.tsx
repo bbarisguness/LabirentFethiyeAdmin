@@ -18,14 +18,18 @@ import {
   Checkbox,
   ListItemText
 } from '@mui/material';
-import { v4 as uuid } from 'uuid';
+//import { v4 as uuid } from 'uuid';
 
 import MainCard from 'components/MainCard';
 import useCategory from 'hooks/category/useCategory';
-import useDistance from 'hooks/distance/useDistance';
+//import useDistance from 'hooks/distance/useDistance';
 import useCreateVilla from 'hooks/villa/useCreateVilla';
-import useFeature from 'hooks/feature/useFeature';
+//import useFeature from 'hooks/feature/useFeature';
 import { useNavigate } from 'react-router';
+import ReactDraft from 'sections/forms/plugins/ReactDraft';
+import { useTheme } from '@mui/material/styles';
+import { ThemeDirection, ThemeMode } from 'types/config';
+import useConfig from 'hooks/useConfig';
 
 const getInitialValues = () => {
   const newReservation = {
@@ -42,13 +46,14 @@ const getInitialValues = () => {
     categories: [],
     metaTitle: '',
     metaDescription: '',
-    distance_rulers: [],
-    video: '',
-    features: []
+    video: ''
   };
   return newReservation;
 };
 const VillaCreate = () => {
+  const theme = useTheme();
+  const { themeDirection } = useConfig();
+
   const CustomerSchema = Yup.object().shape({
     name: Yup.string().max(255).required('İsim zorunludur'),
     room: Yup.number().moreThan(0, "Oda sayısı 0'dan büyük olmalıdır").required('Oda Sayısı zorunludur'),
@@ -74,15 +79,15 @@ const VillaCreate = () => {
     validationSchema: CustomerSchema,
     onSubmit: (values, { setSubmitting }) => {
       try {
-        var feids: any = [];
-        var drids: any = [];
+        // var feids: any = [];
+        // var drids: any = [];
         var catids: any = [];
-        values.distance_rulers.map((x) => {
-          var a = distances?.data.data.find((dr: any) => dr.attributes.name === x);
-          if (a) {
-            drids.push(a.id);
-          }
-        });
+        // values.distance_rulers.map((x) => {
+        //   var a = distances?.data.data.find((dr: any) => dr.attributes.name === x);
+        //   if (a) {
+        //     drids.push(a.id);
+        //   }
+        // });
 
         values.categories.map((x) => {
           var a = categories?.data.data.find((dr: any) => dr.attributes.name === x);
@@ -91,15 +96,27 @@ const VillaCreate = () => {
           }
         });
 
-        values.features.map((x) => {
-          var a = features?.data.data.find((dr: any) => dr.attributes.name === x);
-          if (a) {
-            feids.push(a.id);
-          }
-        });
-        values.slug = uuid();
-        values.features = feids;
-        values.distance_rulers = drids;
+        // values.features.map((x) => {
+        //   var a = features?.data.data.find((dr: any) => dr.attributes.name === x);
+        //   if (a) {
+        //     feids.push(a.id);
+        //   }
+        // });
+
+        // values.features = feids;
+        // values.distance_rulers = drids;
+
+        //values.slug = uuid();
+        values.slug = values.name
+          .toString()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim()
+          .replace(/\s+/g, '-')
+          .replace(/[^\w-]+/g, '')
+          .replace(/--+/g, '-');
+
         values.categories = catids;
 
         mutate(
@@ -143,8 +160,8 @@ const VillaCreate = () => {
     }
   });
   const { data: categories } = useCategory();
-  const { data: distances } = useDistance();
-  const { data: features } = useFeature();
+  //const { data: distances } = useDistance();
+  //const { data: features } = useFeature();
   const { errors, touched, handleSubmit, getFieldProps, values } = formik;
   return (
     <MainCard content={false} title="Villa Ekle">
@@ -246,7 +263,7 @@ const VillaCreate = () => {
                   helperText={touched.descriptionShort && errors.descriptionShort}
                 />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <InputLabel htmlFor="villa-descriptionLong">Uzun Açıklama</InputLabel>
                 <TextField
                   fullWidth
@@ -258,6 +275,77 @@ const VillaCreate = () => {
                   error={Boolean(touched.descriptionLong && errors.descriptionLong)}
                   helperText={touched.descriptionLong && errors.descriptionLong}
                 />
+              </Grid> */}
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  '& .rdw-editor-wrapper': {
+                    bgcolor: theme.palette.background.paper,
+                    border: '1px solid',
+                    borderColor: theme.palette.divider,
+                    borderRadius: '4px',
+                    overflow: 'visible',
+                    '& .rdw-editor-main': {
+                      px: 2,
+                      py: 0.5,
+                      border: 'none'
+                    },
+                    '& .rdw-editor-toolbar': {
+                      pt: 1.25,
+                      border: 'none',
+                      borderBottom: '1px solid',
+                      borderColor: theme.palette.divider,
+                      bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.light' : 'secondary.lighter',
+                      '& .rdw-option-wrapper': {
+                        bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.light' : 'secondary.lighter',
+                        borderColor: theme.palette.divider
+                      },
+                      '& .rdw-dropdown-wrapper': {
+                        bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.light' : 'secondary.lighter',
+                        borderColor: theme.palette.divider,
+                        '& .rdw-dropdown-selectedtext': {
+                          color: theme.palette.mode === ThemeMode.DARK ? theme.palette.secondary[100] : 'secondary.darker'
+                        },
+                        '& .rdw-dropdownoption-default': {
+                          color: theme.palette.mode === ThemeMode.DARK ? theme.palette.secondary[100] : 'secondary.darker'
+                        },
+                        '& .rdw-dropdown-carettoopen': {
+                          position: themeDirection === ThemeDirection.RTL ? 'initial' : 'absolute'
+                        }
+                      },
+                      '& .rdw-emoji-modal': {
+                        left: { xs: -140, sm: -195, md: 5 }
+                      },
+                      '& .rdw-embedded-modal': {
+                        left: { xs: -100, sm: -165, md: 5 }
+                      },
+                      '& .rdw-link-modal': {
+                        left: { xs: 0, sm: -100, md: 5 }
+                      },
+                      '& .rdw-image-modal': {
+                        left: { xs: -190, sm: 30, md: 5 },
+                        top: '15px'
+                      },
+                      '& .rdw-colorpicker-modal': {
+                        left: { xs: -150, sm: 5 }
+                      }
+                    },
+                    ...(theme.direction === ThemeDirection.RTL && {
+                      '.rdw-dropdown-carettoopen': {
+                        position: 'absolute !important',
+                        right: '10%',
+                        left: 'inherit'
+                      },
+                      '.rdw-dropdown-carettoclose': {
+                        right: '10%',
+                        left: 'inherit'
+                      }
+                    })
+                  }
+                }}
+              >
+                <ReactDraft key={null} />
               </Grid>
               <Grid item xs={6}>
                 <InputLabel htmlFor="villa-metaTitle">Meta Başlık</InputLabel>
@@ -281,7 +369,7 @@ const VillaCreate = () => {
                   helperText={touched.metaDescription && errors.metaDescription}
                 />
               </Grid>
-              <Grid item xs={6}>
+              {/* <Grid item xs={6}>
                 <InputLabel id="villa-distance_rulers-label">Mesafeler</InputLabel>
                 <FormControl fullWidth>
                   <Select
@@ -306,8 +394,8 @@ const VillaCreate = () => {
                       ))}
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={6}>
+              </Grid> */}
+              {/* <Grid item xs={6}>
                 <InputLabel id="villa-features-label">Özellikler</InputLabel>
                 <FormControl fullWidth>
                   <Select
@@ -332,7 +420,7 @@ const VillaCreate = () => {
                       ))}
                   </Select>
                 </FormControl>
-              </Grid>
+              </Grid> */}
               <Grid item xs={6}>
                 <InputLabel htmlFor="villa-video">Video</InputLabel>
                 <TextField
