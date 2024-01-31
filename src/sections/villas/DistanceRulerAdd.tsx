@@ -1,5 +1,16 @@
 import { dispatch } from 'store';
-import { Button, Grid, InputLabel, Stack, TextField } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  TextField
+} from '@mui/material';
 import MainCard from 'components/MainCard';
 import AnimateButton from 'components/@extended/AnimateButton';
 import { openSnackbar } from 'store/reducers/snackbar';
@@ -12,14 +23,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const validationSchema = yup.object({
   name: yup.string().required('Başlık Yazmak Zorunludur'),
-  value: yup.string().required('Değer" Yazmak Zorunludur')
+  value: yup.string().required('Değer" Yazmak Zorunludur'),
+  icon: yup.string().required('Icon Seçmek Zorunludur')
 });
 
 const getInitialValues = () => {
   const newReservation = {
     name: '',
     value: '',
-    //icon: '',
+    icon: '',
     villa: {}
   };
   return newReservation;
@@ -94,7 +106,28 @@ const DistanceRulerAdd = () => {
             </Grid>
             <Grid item xs={12}>
               <Stack spacing={1}>
-                <InputLabel htmlFor="value">Değer *</InputLabel>
+                <InputLabel htmlFor="icon">Icon *</InputLabel>
+                <FormControl>
+                  <RadioGroup row aria-label="icon" value={formik.values.icon} onChange={formik.handleChange} name="icon" id="icon">
+                    <FormControlLabel value="shopping-cart" control={<Radio />} label="Market" />
+                    <FormControlLabel value="lamp" control={<Radio />} label="Restoran" />
+                    <FormControlLabel value="airplane" control={<Radio />} label="Havaalanı" />
+                    <FormControlLabel value="sun-fog" control={<Radio />} label="Deniz" />
+                    <FormControlLabel value="buildings-2" control={<Radio />} label="Merkez" />
+                    <FormControlLabel value="bus" control={<Radio />} label="Toplu Taşıma" />
+                  </RadioGroup>
+                </FormControl>
+                {formik.errors.icon && (
+                  <FormHelperText error id="standard-weight-helper-text-email-login">
+                    {' '}
+                    {formik.errors.icon}{' '}
+                  </FormHelperText>
+                )}
+              </Stack>
+            </Grid>
+            <Grid item xs={12}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="value">Mesafe *</InputLabel>
                 <TextField
                   fullWidth
                   id="value"

@@ -1,5 +1,5 @@
 import { dispatch } from 'store';
-import { Button, Grid, InputLabel, Stack, TextField } from '@mui/material';
+import { Button, FormControlLabel, Grid, InputLabel, RadioGroup, Stack, TextField } from '@mui/material';
 import MainCard from 'components/MainCard';
 import AnimateButton from 'components/@extended/AnimateButton';
 import { openSnackbar } from 'store/reducers/snackbar';
@@ -9,10 +9,14 @@ import useCreatePriceTable from 'hooks/villa/useCreatePriceTable';
 import { useNavigate, useParams } from 'react-router';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { FormControl } from '@mui/material';
+import { FormHelperText } from '@mui/material';
+import { Radio } from '@mui/material';
 
 const validationSchema = yup.object({
   name: yup.string().required('Başlık Yazmak Zorunludur'),
-  price: yup.number().required('Fiyat Yazmak Zorunludur')
+  price: yup.number().required('Fiyat Yazmak Zorunludur'),
+  icon: yup.string().required('Icon Seçmek Zorunludur')
 });
 
 const getInitialValues = () => {
@@ -20,7 +24,7 @@ const getInitialValues = () => {
     name: '',
     description: '',
     price: '',
-    //icon: '',
+    icon: '',
     villa: {}
   };
   return newReservation;
@@ -88,7 +92,26 @@ const PriceTableAdd = () => {
                   placeholder="Başlık Yazınız.."
                   value={formik.values.name}
                   onChange={formik.handleChange}
+                  error={formik.touched.name && Boolean(formik.errors.name)}
+                  helperText={formik.touched.name && formik.errors.name}
                 />
+              </Stack>
+            </Grid>
+            <Grid item xs={12}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="icon">Icon *</InputLabel>
+                <FormControl>
+                  <RadioGroup row aria-label="icon" value={formik.values.icon} onChange={formik.handleChange} name="icon" id="icon">
+                    <FormControlLabel value="cloud-drizzle" control={<Radio />} label="Yağmurlu" />
+                    <FormControlLabel value="cloud-notif" control={<Radio />} label="Parçalı Bulut" />
+                    <FormControlLabel value="sun" control={<Radio />} label="Güneş" />
+                  </RadioGroup>
+                </FormControl>
+                {formik.errors.icon && (
+                  <FormHelperText error id="standard-weight-helper-text-email-login">
+                    {formik.errors.icon}
+                  </FormHelperText>
+                )}
               </Stack>
             </Grid>
             <Grid item xs={12}>

@@ -14,7 +14,9 @@ import { PopupTransition } from 'components/@extended/Transitions';
 import { useState } from 'react';
 //import PriceTableCreate from 'pages/villa/components/priceTableAdd';
 import DistanceRulerCreate from 'pages/villa/components/distanceRulerAdd';
+import PriceTableCreate from 'pages/villa/components/priceTableAdd';
 import FeatureCreate from './featureAdd';
+
 
 export const header: LabelKeyObject[] = [
   { label: 'Dessert (100g serving)', key: 'name' },
@@ -152,7 +154,7 @@ const VillaContent = () => {
                 sx={{ '& .MuiDialog-paper': { p: 0 }, transition: 'transform 225ms' }}
                 aria-describedby="alert-dialog-slide-description"
               >
-                {/* <PriceTableCreate /> */}
+                <PriceTableCreate />
               </Dialog>
               <TableContainer>
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
@@ -182,7 +184,7 @@ const VillaContent = () => {
               </TableContainer>
             </MainCard>
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <MainCard title="Kategoriler" content={false} cardHeaderStyle={{ background: 'rgb(206 217 255)' }}>
               <TableContainer>
                 <Table sx={{ minWidth: 350 }} aria-label="simple table">
@@ -195,7 +197,7 @@ const VillaContent = () => {
                     {isLoading && <CircularProgress />}
                     {data &&
                       data?.data.data.attributes.categories.data?.map((row: any, key: any) => (
-                        <TableRow hover key={row.id} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
+                        <TableRow hover key={row.id}>
                           <TableCell sx={{ pl: 3 }} component="th" scope="row">
                             {row.attributes.name}
                           </TableCell>
@@ -205,7 +207,7 @@ const VillaContent = () => {
                 </Table>
               </TableContainer>
             </MainCard>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <MainCard
               title="Özellikler"
