@@ -58,7 +58,6 @@ const VillaCreate = () => {
   const theme = useTheme();
   const { themeDirection } = useConfig();
 
-
   const CustomerSchema = Yup.object().shape({
     name: Yup.string().max(255).required('İsim zorunludur'),
     room: Yup.number().moreThan(0, "Oda sayısı 0'dan büyük olmalıdır").required('Oda Sayısı zorunludur'),
@@ -78,8 +77,8 @@ const VillaCreate = () => {
     */
 
   const navigate = useNavigate();
-  
-  const [editorState,setEditorState] = useState(() => {
+
+  const [editorState, setEditorState] = useState(() => {
     const initialContent =
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
     return EditorState.createWithContent(ContentState.createFromText(initialContent));
@@ -87,15 +86,16 @@ const VillaCreate = () => {
   const onContentChange = (editorState: EditorState) => {
     setEditorState(editorState);
     //@ts-ignore
-    console.log(stateToHTML(editorState.getCurrentContent()));
-  }
+    //console.log(stateToHTML(editorState.getCurrentContent()));
+    setFieldValue('descriptionLong', stateToHTML(editorState.getCurrentContent()));
+  };
   const formik = useFormik({
     initialValues: getInitialValues(),
     validationSchema: CustomerSchema,
     //@ts-ignore
     onSubmit: (values, { setSubmitting }) => {
       try {
-        return false;
+        //return false;
         // var feids: any = [];
         // var drids: any = [];
         var catids: any = [];
@@ -179,7 +179,7 @@ const VillaCreate = () => {
   const { data: categories } = useCategory();
   //const { data: distances } = useDistance();
   //const { data: features } = useFeature();
-  const { errors, touched, handleSubmit, getFieldProps, values } = formik;
+  const { errors, touched, handleSubmit, getFieldProps, values, setFieldValue } = formik;
   return (
     <MainCard content={false} title="Villa Ekle">
       <FormikProvider value={formik}>
@@ -362,10 +362,7 @@ const VillaCreate = () => {
                   }
                 }}
               >
-                <Editor
-                    editorState={editorState}
-                    onEditorStateChange={onContentChange}
-                />
+                <Editor editorState={editorState} onEditorStateChange={onContentChange} />
               </Grid>
               <Grid item xs={6}>
                 <InputLabel htmlFor="villa-metaTitle">Meta Başlık</InputLabel>

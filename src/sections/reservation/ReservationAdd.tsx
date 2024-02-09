@@ -1,38 +1,50 @@
-//import { dispatch } from 'store';
-import { useState } from 'react';
+import * as Yup from 'yup';
+import { useEffect, useState } from 'react';
 
-// material-ui
-//import { Button, FormControl, Grid, InputLabel, ListItemText, Select, Stack, TextField } from '@mui/material';
-import { Button, Grid, InputLabel, ListItemText, Select, Stack, TextField } from '@mui/material';
+import { useFormik, Form, FormikProvider } from 'formik';
+import { dispatch } from 'store';
+import { openSnackbar } from 'store/reducers/snackbar';
+import { Button, DialogActions, DialogContent, Divider, Grid, InputLabel, ListItemText, Stack, TextField } from '@mui/material';
 
-// project-imports
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import MainCard from 'components/MainCard';
-import AnimateButton from 'components/@extended/AnimateButton';
-//import { openSnackbar } from 'store/reducers/snackbar';
-
-// third-party
-// import { useFormik } from 'formik';
-// import * as yup from 'yup';
-// import useCreateReservation from 'hooks/reservation/useCreateReservation';
-//import useCreateReservationInfo from 'hooks/reservation/useCreateReservationInfo';
-import { useParams } from 'react-router';
-
-import useVillas from 'hooks/villa/useVillas';
-// import useGetReservationPrices from 'hooks/reservation/useGetReservationPrices';
-//import { MenuItem } from '@mui/material';
+import { useNavigate, useParams } from 'react-router';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import moment from 'moment';
+import useVillas from 'hooks/villa/useVillas';
+import apiRequest from 'services/request';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { FormControl } from '@mui/material';
+import { Select } from '@mui/material';
 import { MenuItem } from '@mui/material';
-import moment from 'moment';
-//import useGetReservationPrices from 'hooks/reservation/useGetReservationPrices';
-import apiRequest from 'services/request';
-// import moment from 'moment';
-//import { data } from 'data/org-chart';
+import useCreateReservation from 'hooks/reservation/useCreateReservation';
 
+const getInitialValues = () => {
+  const newReservation = {
+    name: '',
+    surname: '',
+    phone: '',
+    email: '',
+    checkIn: '',
+    checkOut: '',
+    villaId: '',
+    total: 0,
+    villa: {},
+    amount: 0
+  };
+  return newReservation;
+};
 const ReservationAdd = () => {
+  const CustomerSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    surname: Yup.string().required('Surname is required')
+    // checkIn: Yup.date().required('CheckIn is required'),
+    // checkOut: Yup.date().required('checkOut is required')
+  });
+  const { mutate } = useCreateReservation();
+
+  const navigate = useNavigate();
   const params = useParams();
 
   const { data } = useVillas({
@@ -40,545 +52,298 @@ const ReservationAdd = () => {
     Size: 15
   });
 
-  
-  
-  // if (date1 && date2) {
-  //   alert(moment(date1).format('YYYY-MM-DD'));
-  // }
-
-  // function getPrice(checkIn: Date, checkOut: Date) {
-  //   //let fakeDate: Date = checkIn;
-  //   // const [fakeDate, setFakeDate] = useState(checkIn);
-  //   // while (fakeDate < checkOut) {
-  //   //   //fakeDate = fakeDate.setDate(fakeDate.getDate() + 1);
-  //   //   setFakeDate(fakeDate.setDate(fakeDate.getDate() + 1));
-  //   // }
-  // }
-
   const [date1, setDate1] = useState(null);
   const [date2, setDate2] = useState(null);
+  const [isAvailable, setIsAvailable] = useState(true);
+  var villaId: any = 0;
+  const formik = useFormik({
+    initialValues: getInitialValues(),
+    validationSchema: CustomerSchema,
+    onSubmit: (values, { setSubmitting }) => {
+      try {
+        //alert('burda');
+        if (params.id) {
+          values.villaId = params.id;
+        } else if (!values.villaId) {
+          alert('villa Id boş geldi');          
+        }
 
-  // const { data, refetch } = useGetReservationPrices({
-  //   VillaId: params.id,
-  //   CheckIn: moment(date1).format('YYYY-MM-DD'),
-  //   CheckOut: moment(date2).format('YYYY-MM-DD')
-  // });
-  // const { data } = useGetReservationPrices(
-  //   params.id as string,
-  //   moment(date1).format('YYYY-MM-DD').toString(),
-  //   moment(date2).format('YYYY-MM-DD').toString()
-  // );
+        values.checkIn = moment(date1).format('YYYY-MM-DD').toString();
+        values.checkOut = moment(date2).format('YYYY-MM-DD').toString();
+
+        values.villa = { connect: [values.villaId] };
+        values.amount = values.total;
+
+        //console.log(values);
+
+        mutate(
+          {
+            data: values
+          },
+          {
+            onError: (error: any) => {
+              dispatch(
+                openSnackbar({
+                  open: true,
+                  message: error.response?.data.message,
+                  variant: 'alert',
+                  alert: {
+                    color: 'error'
+                  },
+                  close: false
+                })
+              );
+            },
+            onSuccess: (res) => {
+              alert('Rezervasyon Eklendi..');
+              console.log(res.data.data.id);
+
+              apiRequest('POST', 'reservation-infos', {
+                data: {
+                  name: values.name,
+                  surname: values.surname,
+                  phone: values.phone,
+                  email: values.email,
+                  owner: true,
+                  peopleType: 'Adult',
+                  reservation: {
+                    connect: [res.data.data.id]
+                  }
+                }
+              });
+
+              navigate('/villa/show/' + values.villaId + '/summary');
+              setSubmitting(false);
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  });
 
   const handlePrice = () => {
-    alert('checkIn : ' + moment(date1).format('YYYY-MM-DD'));
-    alert('checkOut : ' + moment(date2).format('YYYY-MM-DD'));
+    if (date1 == null || date2 == null) {
+      alert('Lütfen Tarih Seçiniz..');
+      return;
+    } else {
+      if (Date.parse(date1) && Date.parse(date2)) {
+        if (new Date(date1) >= new Date(date2)) {
+          alert('Tarihleri Kontrol Ediniz.');
+          return;
+        }
+      }
 
-    const checkIn = moment(date1).format('YYYY-MM-DD');
-    const checkOut = moment(date2).format('YYYY-MM-DD');
+      if (params.id) villaId = params.id;
+      else villaId = formik.values.villaId;
 
-    const query = `/price-dates?sort[0]=checkIn:asc&filters[$and][0][villa][id][$eq]=${params.id}&filters[$and][1][$or][0][$and][0][checkIn][$gt]=${checkIn}&filters[$and][1][$or][0][$and][1][checkIn][$lte]=${checkOut}&filters[$and][1][$or][1][$and][0][checkIn][$lte]=${checkIn}&filters[$and][1][$or][1][$and][1][checkOut][$gte]=${checkIn}&filters[$and][1][$or][2][$and][0][checkIn][$lte]=${checkOut}&filters[$and][1][$or][2][$and][1][checkOut][$gte]=${checkOut}&populate[villa][fields][0]=id&populate[villa][fields][1]=name&fields[0]=checkIn&fields[1]=checkOut&fields[2]=price`;
-    var data = apiRequest('GET', query);
-    console.log(data);
+      if (villaId === 0) {
+        alert('Lütfen Villa Seçin Seçiniz..');
+        return;
+      }
+      apiRequest(
+        'GET',
+        `/reservations?sort[0]=checkIn:asc&filters[$and][0][villa][id][$eq]=${villaId}&filters[$and][1][$or][0][$and][0][checkIn][$gt]=${moment(
+          date1
+        )
+          .format('YYYY-MM-DD')
+          .toString()}&filters[$and][1][$or][0][$and][1][checkIn][$lt]=${moment(date2)
+          .format('YYYY-MM-DD')
+          .toString()}&filters[$and][1][$or][1][$and][0][checkIn][$lte]=${moment(date1)
+          .format('YYYY-MM-DD')
+          .toString()}&filters[$and][1][$or][1][$and][1][checkOut][$gt]=${moment(date1)
+          .format('YYYY-MM-DD')
+          .toString()}&filters[$and][1][$or][2][$and][0][checkIn][$lt]=${moment(date2)
+          .format('YYYY-MM-DD')
+          .toString()}&filters[$and][1][$or][2][$and][1][checkOut][$gte]=${moment(date2)
+          .format('YYYY-MM-DD')
+          .toString()}&populate[villa][fields][0]=id&populate[villa][fields][1]=name&fields[0]=id`
+      ).then((res) => {
+        if (res.data.data.length < 1) {
+          apiRequest(
+            'GET',
+            `/price-dates?sort[0]=checkIn:asc&filters[$and][0][villa][id][$eq]=${villaId}&filters[$and][1][$or][0][$and][0][checkIn][$gt]=${moment(
+              date1
+            ).format('YYYY-MM-DD')}&filters[$and][1][$or][0][$and][1][checkIn][$lte]=${moment(date2).format(
+              'YYYY-MM-DD'
+            )}&filters[$and][1][$or][1][$and][0][checkIn][$lte]=${moment(date1).format(
+              'YYYY-MM-DD'
+            )}&filters[$and][1][$or][1][$and][1][checkOut][$gte]=${moment(date1).format(
+              'YYYY-MM-DD'
+            )}&filters[$and][1][$or][2][$and][0][checkIn][$lte]=${moment(date2).format(
+              'YYYY-MM-DD'
+            )}&filters[$and][1][$or][2][$and][1][checkOut][$gte]=${moment(date2).format(
+              'YYYY-MM-DD'
+            )}&populate[villa][fields][0]=id&populate[villa][fields][1]=name&fields[0]=checkIn&fields[1]=checkOut&fields[2]=price`
+          ).then((resP) => {
+            //console.log(resP);
+            var fakeDate = new Date(moment(date1).format('YYYY-MM-DD'));
+            var days: any = [];
 
+            resP.data.data.map((priceDate: any) => {
+              while (fakeDate >= new Date(priceDate.attributes.checkIn) && fakeDate <= new Date(priceDate.attributes.checkOut)) {
+                if (fakeDate > new Date(moment(date2).format('YYYY-MM-DD'))) break;
+                days.push({ date: moment(fakeDate).format('YYYY-MM-DD'), price: priceDate.attributes.price });
+                fakeDate.setDate(fakeDate.getDate() + 1);
+              }
+            });
+            var toplam = 0;
+            for (var i = 0; i < days.length; i++) {
+              toplam = toplam + Number(days[i].price);
+            }
+            formik.values.total = toplam;
+            if (toplam > 0) setIsAvailable(false);
+            else setIsAvailable(true);
+            console.log('toplam fiyat : ', toplam);
+          });
+        } else {
+          alert('Seçilen Tarihlerde Tesis Müsait Değil..');
+          setIsAvailable(true);
+        }
+      });
+    }
   };
 
+  useEffect(() => {
+    setIsAvailable(true);
+  }, [date1, date2, villaId]);
+
+  const { errors, touched, handleSubmit, getFieldProps } = formik;
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <MainCard title="Rezervasyon Ekle">
-        <form>
-          <Grid container spacing={3}>
-            {!params.id && (
-              <Grid item xs={12}>
-                <InputLabel id="villa-categories-label" sx={{ marginBottom: 1 }}>
-                  Villa Seçimi *
-                </InputLabel>
-                <FormControl fullWidth>
-                  <Select labelId="villa-categories-label" id="villa-categories">
-                    {data &&
-                      data.data.data.map((item: any) => (
-                        <MenuItem key={item.id} value={item.attributes.name}>
-                          <ListItemText primary={item.attributes.name} />
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
+      <MainCard content={false} title="Rezervasyon Ekle">
+        <FormikProvider value={formik}>
+          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <DialogContent sx={{ p: 2.5 }}>
+              <Grid container spacing={3}>
+                {!params.id && (
+                  <Grid item xs={12}>
+                    <InputLabel id="villa-categories-label" sx={{ marginBottom: 1 }}>
+                      Villa Seçimi *
+                    </InputLabel>
+                    <FormControl fullWidth>
+                      {data && (
+                        <Select
+                          labelId="villaId-label"
+                          id="villaId-id"
+                          {...getFieldProps('villaId')}
+                          //@ts-ignore
+                          renderValue={(selected: any) => data.data.data.find((item) => item.id === selected).attributes.name}
+                        >
+                          {data?.data.data.map((item: any) => (
+                            <MenuItem key={item.id} value={item.id}>
+                              <ListItemText primary={item.attributes.name} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    </FormControl>
+                  </Grid>
+                )}
+                <Grid item xs={6}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="checkIn">Giriş Tarihi *</InputLabel>
+                    <DatePicker value={date1} onChange={(newValue) => setDate1(newValue)} slotProps={{ textField: { fullWidth: true } }} />
+                  </Stack>
+                </Grid>
+                <Grid item xs={6}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="checkOut">Çıkış Tarihi *</InputLabel>
+                    <DatePicker value={date2} onChange={(newValue) => setDate2(newValue)} slotProps={{ textField: { fullWidth: true } }} />
+                  </Stack>
+                </Grid>
+                <Grid item xs={12}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Button variant="contained" type="button" onClick={handlePrice}>
+                      Fiyat Sorgula
+                    </Button>
+                  </Stack>
+                </Grid>
+                <Grid item xs={6}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="Adı Soyadı">Adı *</InputLabel>
+                    <TextField
+                      fullWidth
+                      id="name"
+                      name="name"
+                      placeholder="Rezervasyon Sahibi Adı"
+                      value={formik.values.name}
+                      onChange={formik.handleChange}
+                      error={Boolean(touched.name && errors.name)}
+                      helperText={touched.name && errors.name}
+                    />
+                  </Stack>
+                </Grid>
+                <Grid item xs={6}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="Soyadı">Soyadı *</InputLabel>
+                    <TextField
+                      fullWidth
+                      id="surname"
+                      name="surname"
+                      placeholder="Rezervasyon Sahibi Soyadı"
+                      value={formik.values.surname}
+                      onChange={formik.handleChange}
+                      error={formik.touched.surname && Boolean(formik.errors.surname)}
+                      helperText={formik.touched.surname && formik.errors.surname}
+                    />
+                  </Stack>
+                </Grid>
+                <Grid item xs={6}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="Telefon Numarası">Telefon Numarası</InputLabel>
+                    <TextField
+                      fullWidth
+                      id="phone"
+                      name="phone"
+                      placeholder="Rezervasyon Sahibi Telefon Numarası"
+                      value={formik.values.phone}
+                      onChange={formik.handleChange}
+                      error={formik.touched.phone && Boolean(formik.errors.phone)}
+                      helperText={formik.touched.phone && formik.errors.phone}
+                    />
+                  </Stack>
+                </Grid>
+                <Grid item xs={6}>
+                  <Stack spacing={1}>
+                    <InputLabel htmlFor="email">Email Adresi</InputLabel>
+                    <TextField
+                      fullWidth
+                      id="email"
+                      name="email"
+                      placeholder="Enter email address"
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      error={formik.touched.email && Boolean(formik.errors.email)}
+                      helperText={formik.touched.email && formik.errors.email}
+                    />
+                  </Stack>
+                </Grid>
               </Grid>
-            )}
-            <Grid item xs={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="checkIn">Giriş Tarihi *</InputLabel>
-                <DatePicker value={date1} onChange={(newValue) => setDate1(newValue)} slotProps={{ textField: { fullWidth: true } }} />
-              </Stack>
-            </Grid>
-            <Grid item xs={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="checkOut">Çıkış Tarihi *</InputLabel>
-                <DatePicker value={date2} onChange={(newValue) => setDate2(newValue)} slotProps={{ textField: { fullWidth: true } }} />
-              </Stack>
-            </Grid>
-            <Grid item xs={12}>
-              <Stack spacing={1}>
-                <Button variant="contained" type="button" size="medium" sx={{ marginTop: 4 }} onClick={handlePrice}>
-                  Fiyat Sorgula
-                </Button>
-              </Stack>
-            </Grid>
-            <Grid item xs={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="Adı Soyadı">Adı *</InputLabel>
-                <TextField
-                  fullWidth
-                  id="name"
-                  name="name"
-                  placeholder="Rezervasyon Sahibi Adı"
-                  // value={formik.values.name}
-                  // onChange={formik.handleChange}
-                  // error={formik.touched.name && Boolean(formik.errors.name)}
-                  // helperText={formik.touched.name && formik.errors.name}
-                />
-              </Stack>
-            </Grid>
-            <Grid item xs={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="Soyadı">Soyadı *</InputLabel>
-                <TextField
-                  fullWidth
-                  id="surname"
-                  name="surname"
-                  placeholder="Rezervasyon Sahibi Soyadı"
-                  // value={formik.values.surname}
-                  // onChange={formik.handleChange}
-                  // error={formik.touched.surname && Boolean(formik.errors.surname)}
-                  // helperText={formik.touched.surname && formik.errors.surname}
-                />
-              </Stack>
-            </Grid>
-            <Grid item xs={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="Telefon Numarası">Telefon Numarası</InputLabel>
-                <TextField
-                  fullWidth
-                  id="phone"
-                  name="phone"
-                  placeholder="Rezervasyon Sahibi Telefon Numarası"
-                  // value={formik.values.phone}
-                  // onChange={formik.handleChange}
-                  // error={formik.touched.phone && Boolean(formik.errors.phone)}
-                  // helperText={formik.touched.phone && formik.errors.phone}
-                />
-              </Stack>
-            </Grid>
-            <Grid item xs={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="email">Email Adresi</InputLabel>
-                <TextField
-                  fullWidth
-                  id="email"
-                  name="email"
-                  placeholder="Enter email address"
-                  // value={formik.values.email}
-                  // onChange={formik.handleChange}
-                  // error={formik.touched.email && Boolean(formik.errors.email)}
-                  // helperText={formik.touched.email && formik.errors.email}
-                />
-              </Stack>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Stack direction="row" justifyContent="flex-end">
-                <AnimateButton>
-                  <Button variant="contained" type="submit">
-                    Rezervasyonu Oluştur
-                  </Button>
-                </AnimateButton>
-              </Stack>
-            </Grid>
-          </Grid>
-        </form>
+            </DialogContent>
+            <Divider />
+            <DialogActions sx={{ p: 2.5 }}>
+              <Grid container justifyContent="space-between" alignItems="center">
+                <Grid item>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    {!isAvailable && (
+                      <Button color="success" onClick={() => null}>
+                        Toplam Fiyat : {formik?.values?.total}
+                      </Button>
+                    )}
+                    <Button type="submit" variant="contained" disabled={isAvailable}>
+                      Rezervasyonu Oluştur
+                    </Button>
+                  </Stack>
+                </Grid>
+              </Grid>
+            </DialogActions>
+          </Form>
+        </FormikProvider>
       </MainCard>
     </LocalizationProvider>
   );
 };
 
 export default ReservationAdd;
-
-// #region
-
-// import { dispatch } from 'store';
-// import { useState } from 'react';
-
-// // material-ui
-// //import { Button, FormControl, Grid, InputLabel, ListItemText, Select, Stack, TextField } from '@mui/material';
-// import { Button, Grid, InputLabel, Stack, TextField } from '@mui/material';
-
-// // project-imports
-// import MainCard from 'components/MainCard';
-// import AnimateButton from 'components/@extended/AnimateButton';
-// import { openSnackbar } from 'store/reducers/snackbar';
-
-// // third-party
-// import { useFormik } from 'formik';
-// import * as yup from 'yup';
-// import useCreateReservation from 'hooks/reservation/useCreateReservation';
-// //import useCreateReservationInfo from 'hooks/reservation/useCreateReservationInfo';
-// import { useParams } from 'react-router';
-
-// //import useVillas from 'hooks/villa/useVillas';
-// import useGetReservationPrices from 'hooks/reservation/useGetReservationPrices';
-// //import { MenuItem } from '@mui/material';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-// import moment from 'moment';
-// //import { data } from 'data/org-chart';
-// /**
-//  * 'Enter your email'
-//  * yup.string Expected 0 arguments, but got 1 */
-// const validationSchema = yup.object({
-//   name: yup.string().required('Name is required'),
-//   surname: yup.string().required('Surname is required')
-// });
-
-// // ==============================|| FORM VALIDATION - LOGIN FORMIK  ||============================== //
-
-// const getInitialValues = () => {
-//   const newReservation = {
-//     name: '',
-//     surname: '',
-//     phone: '',
-//     email: '',
-//     checkIn: '',
-//     checkOut: '',
-//     amount: 0,
-//     extraPrice: 0,
-//     total: 0,
-//     villaId: '',
-//     reservationInfoId: '',
-//     villas: []
-//   };
-//   return newReservation;
-// };
-
-// const ReservationAdd = () => {
-//   const params = useParams();
-
-//   const { mutate } = useCreateReservation();
-//   //const { mutate:createReservationInfo } = useCreateReservation();
-//   const formik = useFormik({
-//     initialValues: getInitialValues(),
-//     validationSchema: validationSchema,
-//     onSubmit: (values, { setSubmitting }) => {
-//       try {
-//         if (params.id) {
-//           values.villaId = params.id;
-//         } else {
-//           //alert('villa Id boş geldi');
-//           throw 'villa Id boş geldi';
-//         }
-
-//         // ilk önce rezervasyon eklenecek. Ardından Reservation-Info eklenecek. Burada 2 adet post isteği yapılması gerekecek
-
-//         mutate(
-//           {
-//             data: values
-//           },
-//           {
-//             onError: (error: any) => {
-//               dispatch(
-//                 openSnackbar({
-//                   open: true,
-//                   message: error.response?.data.message,
-//                   variant: 'alert',
-//                   alert: {
-//                     color: 'error'
-//                   },
-//                   close: false
-//                 })
-//               );
-//             },
-//             onSuccess: (res) => {
-//               // createReservationInfo({data:info}, {
-//               //   onError:(){},
-//               //   onSuccess: (res) => {}
-//               // })
-
-//               //navigate('/villa/show/' + res.data.data.id + '/summary');
-//               setSubmitting(false);
-//             }
-//           }
-//         );
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     }
-//   });
-
-//   // function slug(name:string){
-//   //   let url = name.toLowerCase().trim().replace('ş','s').replace('ğ','g').replace('?','')
-//   //   return url;
-//   // }
-
-//   // const { data } = useVillas({
-//   //   Page: 1,
-//   //   Size: 15
-//   // });
-
-//   // if (date1 && date2) {
-//   //   alert(moment(date1).format('YYYY-MM-DD'));
-//   // }
-
-//   // function getPrice(checkIn: Date, checkOut: Date) {
-//   //   //let fakeDate: Date = checkIn;
-//   //   // const [fakeDate, setFakeDate] = useState(checkIn);
-//   //   // while (fakeDate < checkOut) {
-//   //   //   //fakeDate = fakeDate.setDate(fakeDate.getDate() + 1);
-//   //   //   setFakeDate(fakeDate.setDate(fakeDate.getDate() + 1));
-//   //   // }
-//   // }
-
-//   const [date1, setDate1] = useState(null);
-//   const [date2, setDate2] = useState(null);
-
-//   const { data, refetch } = useGetReservationPrices({
-//     VillaId: params.id,
-//     CheckIn: moment(date1).format('YYYY-MM-DD'),
-//     CheckOut: moment(date2).format('YYYY-MM-DD')
-//   });
-
-//   const handlePrice = () => {
-//     // #region
-
-//     // // if (params.id) {
-//     // //   const datePrices = useGetReservationPrices(params.id, moment(date1).format('YYYY-MM-DD').toString(), moment(date2).format('YYYY-MM-DD').toString());
-//     // //  }
-//     // // alert(
-//     // //   'checkIn : ' +
-//     // //     moment(date1).format('YYYY-MM-DD') +
-//     // //     '\ncheckOut : ' +
-//     // //     moment(date2).format('YYYY-MM-DD') +
-//     // //     ' \nFiyat Sorgusu Sonucu Çalışacak..'
-//     // // );
-
-//     // //var async = require('async');
-//     // // var dates = ['2023-10-10', '2023-10-10', '2023-10-10'];
-
-//     // // async.each(
-//     // //   dates,
-//     // //   function (item, callback) {
-//     // //     console.log(item);
-//     // //     //
-//     // //     callback();
-//     // //   },
-//     // //   function () {
-//     // //     console.log('bitti');
-//     // //   }
-//     // // );
-
-//     // if (date1 && date2) {
-//     //   var dates = [];
-//     //   var datePrices: any = [];
-//     //   //var fakeDate = new Date(moment(date1).format('YYYY-MM-DD')).setDate((new Date(moment(date1).format('YYYY-MM-DD')).getDate() - 1));
-//     //   //var fakeDate = new Date(date1)
-//     //   //var barisd = new Date(moment(date1).format('YYYY-MM-DD'));
-//     //   //var barisd =  new Date(moment(date1).toDate().setDate(moment(date1).toDate().getDate() -1));
-//     //   // alert('fake date : ' + moment(fakeDate).format('YYYY-MM-DD'))
-//     //   // alert('date : ' + barisd)
-
-//     //   //var checkInDate = new Date(moment(date1).toDate().setDate(moment(date1).toDate().getDate() -1));
-//     //   //var checkOutDate = new Date(moment(date2).toDate().setDate(moment(date2).toDate().getDate() -1));
-//     //   var checkInDate = moment(date1).toDate();
-//     //   var checkOutDate = moment(date2).toDate();
-
-//     //   var fakeDate = checkInDate;
-
-//     //   while (fakeDate < checkOutDate) {
-//     //     dates.push(moment(fakeDate).format('YYYY-MM-DD'));
-//     //     //console.log(moment(fakeDate).format('YYYY-MM-DD'));
-
-//     //     fakeDate = new Date(fakeDate.setDate(fakeDate.getDate() + 1));
-
-//     //     //barisd = new Date(barisd.setDate(barisd.getDate() + 1));
-
-//     //     //          dates.push(fakeDate);
-//     //     // //         //fakeDate = new Date(fakeDate.setDate(fakeDate.getDate() + 1));
-//     //     // //         fakeDate = new Date(moment(fakeDate).format('YYYY-MM-DD')).setDate(new Date(moment(fakeDate).format('YYYY-MM-DD')).getDate() + 1);
-//     //   }
-
-//     //   //console.log(dates);
-
-//     //   // const { data } = useGetReservationPrices({ VillaId: 1, CheckIn: '2024-01-10', CheckOut: '2024-01-20' });
-
-//     //   //console.log(data);
-
-//     //   var async = require('async');
-
-//     //   refetch();
-//     //   if (data) console.log(data);
-//     //   else refetch();
-
-//     //   async.each(
-//     //     dates,
-//     //     function (item: any, callback: any) {
-//     //       // tüm işlemler
-
-//     //       datePrices.push({ day: item, price: 2500 });
-//     //       callback();
-//     //     },
-//     //     function () {
-//     //       //console.log('bitti');
-//     //     }
-//     //   );
-
-//     //   //console.log(datePrices);
-//     //   // while (date1 < date2) {
-//     //   //   dates.push(moment(date1).format('YYYY-MM-DD'));
-//     //   //   //setDate1((new Date(date1)).setDate(new Date(date1).getDate() + 1)));
-//     //   //   //setDate1( new Date(date1).setDate(new Date(date1).getDate()) )
-//     //   // }
-//     //   //moment(date1).format('YYYY-MM-DD');
-
-//     //   // const datePrices = [];
-//     //   // var fakeDate = new Date(date1);
-
-//     //   // while (fakeDate < new Date(date2)) {
-//     //   //   datePrices.push({ day: fakeDate, price: 2000 });
-//     //   //   fakeDate = new Date(fakeDate.setDate(fakeDate.getDate() + 1));
-//     //   // }
-//     //   // datePrices.map((row) => alert('day : ' + moment(row.day).format('YYYY-MM-DD') + '\nprice : ' + row.price));
-//     //}
-//     // #endregion
-//   };
-
-//   return (
-//     <LocalizationProvider dateAdapter={AdapterDateFns}>
-//       <MainCard title="Rezervasyon Ekle">
-//         <form onSubmit={formik.handleSubmit}>
-//           <Grid container spacing={3}>
-//             {/* {!params.id && (
-//               <Grid item xs={12}>
-//                 <InputLabel id="villa-categories-label" sx={{ marginBottom: 1 }}>
-//                   Villa Seçimi *
-//                 </InputLabel>
-//                 <FormControl fullWidth>
-//                   <Select labelId="villa-categories-label" id="villa-categories">
-//                     {data &&
-//                       data.data.data.map((item: any) => (
-//                         <MenuItem key={item.id} value={item.attributes.name}>
-//                           <ListItemText primary={item.attributes.name} />
-//                         </MenuItem>
-//                       ))}
-//                   </Select>
-//                 </FormControl>
-//               </Grid>
-//             )} */}
-//             <Grid item xs={6}>
-//               <Stack spacing={1}>
-//                 <InputLabel htmlFor="checkIn">Giriş Tarihi *</InputLabel>
-//                 <DatePicker value={date1} onChange={(newValue) => setDate1(newValue)} slotProps={{ textField: { fullWidth: true } }} />
-//               </Stack>
-//             </Grid>
-//             <Grid item xs={6}>
-//               <Stack spacing={1}>
-//                 <InputLabel htmlFor="checkOut">Çıkış Tarihi *</InputLabel>
-//                 {/* <TextField
-//                   fullWidth
-//                   id="checkOut"
-//                   name="checkOut"
-//                   placeholder="Çıkış Tarihi Seçiniz"
-//                   value={formik.values.checkOut}
-//                   onChange={formik.handleChange}
-//                   error={formik.touched.checkOut && Boolean(formik.errors.checkOut)}
-//                   helperText={formik.touched.checkOut && formik.errors.checkOut}
-//                 /> */}
-//                 <DatePicker value={date2} onChange={(newValue) => setDate2(newValue)} slotProps={{ textField: { fullWidth: true } }} />
-//               </Stack>
-//             </Grid>
-//             <Grid item xs={12}>
-//               <Stack spacing={1}>
-//                 <Button variant="contained" type="button" size="medium" sx={{ marginTop: 4 }} onClick={handlePrice}>
-//                   Fiyat Sorgula
-//                 </Button>
-//               </Stack>
-//             </Grid>
-//             <Grid item xs={6}>
-//               <Stack spacing={1}>
-//                 <InputLabel htmlFor="Adı Soyadı">Adı *</InputLabel>
-//                 <TextField
-//                   fullWidth
-//                   id="name"
-//                   name="name"
-//                   placeholder="Rezervasyon Sahibi Adı"
-//                   value={formik.values.name}
-//                   onChange={formik.handleChange}
-//                   error={formik.touched.name && Boolean(formik.errors.name)}
-//                   helperText={formik.touched.name && formik.errors.name}
-//                 />
-//               </Stack>
-//             </Grid>
-//             <Grid item xs={6}>
-//               <Stack spacing={1}>
-//                 <InputLabel htmlFor="Soyadı">Soyadı *</InputLabel>
-//                 <TextField
-//                   fullWidth
-//                   id="surname"
-//                   name="surname"
-//                   placeholder="Rezervasyon Sahibi Soyadı"
-//                   value={formik.values.surname}
-//                   onChange={formik.handleChange}
-//                   error={formik.touched.surname && Boolean(formik.errors.surname)}
-//                   helperText={formik.touched.surname && formik.errors.surname}
-//                 />
-//               </Stack>
-//             </Grid>
-//             <Grid item xs={6}>
-//               <Stack spacing={1}>
-//                 <InputLabel htmlFor="Telefon Numarası">Telefon Numarası</InputLabel>
-//                 <TextField
-//                   fullWidth
-//                   id="phone"
-//                   name="phone"
-//                   placeholder="Rezervasyon Sahibi Telefon Numarası"
-//                   value={formik.values.phone}
-//                   onChange={formik.handleChange}
-//                   error={formik.touched.phone && Boolean(formik.errors.phone)}
-//                   helperText={formik.touched.phone && formik.errors.phone}
-//                 />
-//               </Stack>
-//             </Grid>
-//             <Grid item xs={6}>
-//               <Stack spacing={1}>
-//                 <InputLabel htmlFor="email">Email Adresi</InputLabel>
-//                 <TextField
-//                   fullWidth
-//                   id="email"
-//                   name="email"
-//                   placeholder="Enter email address"
-//                   value={formik.values.email}
-//                   onChange={formik.handleChange}
-//                   error={formik.touched.email && Boolean(formik.errors.email)}
-//                   helperText={formik.touched.email && formik.errors.email}
-//                 />
-//               </Stack>
-//             </Grid>
-
-//             <Grid item xs={12}>
-//               <Stack direction="row" justifyContent="flex-end">
-//                 <AnimateButton>
-//                   <Button variant="contained" type="submit">
-//                     Rezervasyonu Oluştur
-//                   </Button>
-//                 </AnimateButton>
-//               </Stack>
-//             </Grid>
-//           </Grid>
-//         </form>
-//       </MainCard>
-//     </LocalizationProvider>
-//   );
-// };
-
-// export default ReservationAdd;
-
-// #endregion
