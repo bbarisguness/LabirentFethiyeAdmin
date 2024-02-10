@@ -39,8 +39,6 @@ const ReservationAdd = () => {
   const CustomerSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     surname: Yup.string().required('Surname is required')
-    // checkIn: Yup.date().required('CheckIn is required'),
-    // checkOut: Yup.date().required('checkOut is required')
   });
   const { mutate } = useCreateReservation();
 
@@ -56,16 +54,16 @@ const ReservationAdd = () => {
   const [date2, setDate2] = useState(null);
   const [isAvailable, setIsAvailable] = useState(true);
   var villaId: any = 0;
+
   const formik = useFormik({
     initialValues: getInitialValues(),
     validationSchema: CustomerSchema,
     onSubmit: (values, { setSubmitting }) => {
       try {
-        //alert('burda');
-        if (params.id) {
-          values.villaId = params.id;
-        } else if (!values.villaId) {
-          alert('villa Id boş geldi');          
+        if (params.id) values.villaId = params.id;
+        else if (!values.villaId) {
+          alert('villa Id boş geldi');
+          return;
         }
 
         values.checkIn = moment(date1).format('YYYY-MM-DD').toString();
@@ -74,7 +72,17 @@ const ReservationAdd = () => {
         values.villa = { connect: [values.villaId] };
         values.amount = values.total;
 
-        //console.log(values);
+        // isAvalilable Control
+        apiRequest(
+          'GET',
+          `/reservations?sort[0]=checkIn:asc&filters[$and][0][villa][id][$eq]=${villaId}&filters[$and][1][$or][0][$and][0][checkIn][$gt]=${values.checkIn}&filters[$and][1][$or][0][$and][1][checkIn][$lt]=${values.checkOut}&filters[$and][1][$or][1][$and][0][checkIn][$lte]=${values.checkIn}&filters[$and][1][$or][1][$and][1][checkOut][$gt]=${values.checkIn}&filters[$and][1][$or][2][$and][0][checkIn][$lt]=${values.checkOut}&filters[$and][1][$or][2][$and][1][checkOut][$gte]=${values.checkOut}&populate[villa][fields][0]=id&populate[villa][fields][1]=name&fields[0]=id`
+        ).then((res) => {
+          if (res.data.data.length > 0) {
+            alert('Lütfen Rezervasyon Bilgilerini Kontol Ediniz..');
+            setIsAvailable(true);
+            return;
+          }
+        });
 
         mutate(
           {
@@ -96,7 +104,6 @@ const ReservationAdd = () => {
             },
             onSuccess: (res) => {
               alert('Rezervasyon Eklendi..');
-              console.log(res.data.data.id);
 
               apiRequest('POST', 'reservation-infos', {
                 data: {
@@ -140,6 +147,7 @@ const ReservationAdd = () => {
 
       if (villaId === 0) {
         alert('Lütfen Villa Seçin Seçiniz..');
+        setIsAvailable(true);
         return;
       }
       apiRequest(
@@ -177,7 +185,6 @@ const ReservationAdd = () => {
               'YYYY-MM-DD'
             )}&populate[villa][fields][0]=id&populate[villa][fields][1]=name&fields[0]=checkIn&fields[1]=checkOut&fields[2]=price`
           ).then((resP) => {
-            //console.log(resP);
             var fakeDate = new Date(moment(date1).format('YYYY-MM-DD'));
             var days: any = [];
 
@@ -195,7 +202,6 @@ const ReservationAdd = () => {
             formik.values.total = toplam;
             if (toplam > 0) setIsAvailable(false);
             else setIsAvailable(true);
-            console.log('toplam fiyat : ', toplam);
           });
         } else {
           alert('Seçilen Tarihlerde Tesis Müsait Değil..');
