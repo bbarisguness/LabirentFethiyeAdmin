@@ -12,10 +12,9 @@ import {
   Button
 } from '@mui/material';
 
-
 // third-party
 import { useNavigate, useLocation } from 'react-router-dom';
-import {  Add } from 'iconsax-react';
+import { Add } from 'iconsax-react';
 
 import { LabelKeyObject } from 'react-csv/lib/core';
 
@@ -58,14 +57,17 @@ const VillaList = () => {
   };
 
   return (
-    <MainCard content={false} title="Villa Listesi" secondary={
+    <MainCard
+      content={false}
+      title="Villa Listesi"
+      secondary={
         <>
-            <Button variant="contained" startIcon={<Add />} onClick={() => navigate("/villa/create")} size="small">
-                Villa Ekle
-            </Button>
+          <Button variant="contained" startIcon={<Add />} onClick={() => navigate('/villa/create')} size="small">
+            Villa Ekle
+          </Button>
         </>
-    }>
-
+      }
+    >
       <TableContainer>
         <Table sx={{ minWidth: 350 }} aria-label="simple table">
           <TableHead>
@@ -80,7 +82,7 @@ const VillaList = () => {
             {isLoading && <CircularProgress />}
             {data &&
               data?.data.data.map((row: any, key: any) => (
-                <TableRow hover key={row.id} onClick={() => navigate('/villa/show/' + row.id + '/summary')}>
+                <TableRow sx={{ cursor: 'pointer' }} hover key={row.id} onClick={() => navigate('/villa/show/' + row.id + '/summary')}>
                   <TableCell sx={{ pl: 3 }} component="th" scope="row">
                     {row.attributes.name}
                   </TableCell>

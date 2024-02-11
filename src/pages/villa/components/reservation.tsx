@@ -108,7 +108,7 @@ const VillaReservation = () => {
                     {isLoading && <CircularProgress />}
                     {data &&
                       data?.data.data.map((row: any, key: any) => (
-                        <TableRow hover key={row.id} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
+                        <TableRow sx={{ cursor: 'pointer' }} hover key={row.id} onClick={() => navigate('/reservation/show/' + row.id)}>
                           <TableCell sx={{ pl: 3 }} component="th" scope="row">
                             {row.attributes.reservation_infos.data[0]?.attributes.name}{' '}
                             {row.attributes.reservation_infos.data[0]?.attributes.surname}

@@ -2,8 +2,7 @@
 import MainCard from 'components/MainCard';
 
 import { Box, Tab, Tabs, Button } from '@mui/material';
-import { Profile, Calendar, DollarCircle, Image, Folder, ClipboardText } from 'iconsax-react';
-
+import { Profile, Calendar, DollarCircle, Image, Folder, ClipboardText, ArchiveTick } from 'iconsax-react';
 import { useEffect, useState, SyntheticEvent } from 'react';
 import { useLocation, Link, Outlet } from 'react-router-dom';
 
@@ -97,7 +96,7 @@ const VillaShow = () => {
             label="Müsait Tarihler"
             component={Link}
             to={'/villa/show/' + params.id + '/available-dates'}
-            icon={<DollarCircle />}
+            icon={<ArchiveTick />}
             iconPosition="start"
           />
           <Tab label="Fiyatlar" component={Link} to={'/villa/show/' + params.id + '/price'} icon={<DollarCircle />} iconPosition="start" />
