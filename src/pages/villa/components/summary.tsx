@@ -124,7 +124,7 @@ const VillaSummary = () => {
                     {villa &&
                       villa.attributes.reservations.data.map((row: any) => {
                         return (
-                          <TableRow hover key={row.id} onClick={() => navigate('#')}>
+                          <TableRow hover key={row.id}  sx={{ cursor: 'pointer' }} onClick={() => navigate('/reservation/show/' + row.id)}>
                             <TableCell sx={{ pl: 3 }} component="th" scope="row">
                               {row.attributes.reservation_infos?.data[0]?.attributes.name}{' '}
                               {row.attributes.reservation_infos?.data[0]?.attributes.surname}

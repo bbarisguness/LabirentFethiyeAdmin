@@ -11,6 +11,14 @@ import { useState } from 'react';
 import { PopupTransition } from 'components/@extended/Transitions';
 import AddCustomerForm from './component/addCustomer';
 
+function PeopleTypeReturn(peopleType: string) {
+  if (peopleType === 'Adult') peopleType = 'Yetişkin';
+  else if (peopleType === 'Child') peopleType = 'Çocuk';
+  else if (peopleType === 'Baby') peopleType = 'Bebek';
+  else peopleType = '-';
+  return peopleType;
+}
+
 const ReservationShow = () => {
   const params = useParams();
 
@@ -78,7 +86,7 @@ const ReservationShow = () => {
                     <TableHead>
                       <TableRow>
                         <TableCell sx={{ pl: 3 }}>Ad Soyad</TableCell>
-                        <TableCell align="right">Tür</TableCell>
+                        <TableCell align="right">Yaş Grubu</TableCell>
                         <TableCell align="right">Telefon</TableCell>
                         <TableCell align="right">E-mail</TableCell>
                       </TableRow>
@@ -91,7 +99,7 @@ const ReservationShow = () => {
                             <TableCell sx={{ pl: 3 }} component="th" scope="row">
                               {row.attributes.name} {row.attributes.surname} {row.attributes.owner ? ' - (Rezervasyon Sahibi)' : ''}
                             </TableCell>
-                            <TableCell align="right">{row.attributes.peopleType}</TableCell>
+                            <TableCell align="right">{PeopleTypeReturn(row.attributes.peopleType)}</TableCell>
                             <TableCell align="right">{row.attributes.phone}</TableCell>
                             <TableCell align="right">{row.attributes.email}</TableCell>
                           </TableRow>

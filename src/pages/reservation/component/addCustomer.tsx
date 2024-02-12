@@ -3,138 +3,212 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import { dispatch } from 'store';
 import { openSnackbar } from 'store/reducers/snackbar';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { Button, DialogActions, DialogContent, DialogTitle, Divider, Grid, InputLabel, Stack, TextField } from '@mui/material';
+import {
+  FormControl,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Button,
+  FormHelperText,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  InputLabel,
+  Stack,
+  TextField
+} from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import useAddReservation from 'hooks/villa/useAddReservation';
+import useCreateReservationInfo from 'hooks/reservation/useCreateReservationInfo';
+import { useParams } from 'react-router';
+import AnimateButton from 'components/@extended/AnimateButton';
 
 export interface Props {
-  onCancel: () => void;  
+  onCancel: () => void;
 }
 const getInitialValues = () => {
   const newReservation = {
-    CheckIn: '',
-    CheckOut: '',
-    FacilityId: '',
     name: '',
     surname: '',
-    'ReservationInfo.Owner': true,
-    'ReservationInfo.PeopleType': 1
+    phone: '',
+    peopleType: '',
+    reservation: {}
   };
   return newReservation;
 };
 const AddCustomerForm = ({ onCancel }: Props) => {
+  const params = useParams();
+
   const CustomerSchema = Yup.object().shape({
-    CheckIn: Yup.string().max(255).required('Başlangıç tarihi zorunludur'),
-    CheckOut: Yup.string().max(255).required('Bitiş tarihi zorunludur'),
-    FacilityId: Yup.string().max(255).required('Villa seçimi zorunludur'),
-    name: Yup.string().max(255).required('İsim zorunludur'),
-    surname: Yup.string().max(255).required('Soyisim zorunludur')
+    name: Yup.string().max(255).required('İsim tarihi zorunludur'),
+    surname: Yup.string().max(255).required('Soyisim zorunludur'),
+    phone: Yup.string().max(255),
+    peopleType: Yup.string().max(255).required('Bu alan zorunludur')
   });
 
-  //const [openAlert, setOpenAlert] = useState(false);
-  /*
-    const handleAlertClose = () => {
-      setOpenAlert(!openAlert);
-      onCancel();
-    };
-    */
-
-  const { mutate } = useAddReservation();
+  const { mutate } = useCreateReservationInfo();
 
   const formik = useFormik({
     initialValues: getInitialValues(),
     validationSchema: CustomerSchema,
     onSubmit: (values, { setSubmitting }) => {
       try {
-        let formData = new FormData();
-        formData.append('CheckIn', values.CheckIn);
-        formData.append('CheckOut', values.CheckOut);
-        formData.append('FacilityId', values.FacilityId);
-        formData.append('ReservationInfo.Name', values.name);
-        formData.append('ReservationInfo.Surname', values.surname);
-        formData.append('ReservationInfo.Owner', 'true');
-        formData.append('ReservationInfo.PeopleType', '1');
-        mutate(formData, {
-          onError: (error: any) => {
-            dispatch(
-              openSnackbar({
-                open: true,
-                message: error.response?.data.message,
-                variant: 'alert',
-                alert: {
-                  color: 'error'
-                },
-                close: false
-              })
-            );
+        if (!params.id) {
+          alert('Rezervasyon Id hatali..');
+          return;
+        }
+
+        values.reservation = { connect: [params.id] };
+        mutate(
+          {
+            data: values
           },
-          onSuccess: (res) => {
-            if (res.data.statusCode == 201) {
+          {
+            onError: (error: any) => {
               dispatch(
                 openSnackbar({
                   open: true,
-                  message: 'Rezervasyon başarıyla eklendi!',
+                  message: error.response?.data.message,
                   variant: 'alert',
                   alert: {
-                    color: 'success'
+                    color: 'error'
                   },
                   close: false
                 })
               );
+            },
+            onSuccess: (res) => {
+              alert('Misafir Eklendi..');
+              //navigate('/villa/show/' + params.id + '/content');
+              setSubmitting(false);
             }
-            setSubmitting(false);
-            onCancel();
           }
-        });
+        );
       } catch (error) {
         console.error(error);
       }
     }
   });
 
-  const { errors, touched, handleSubmit, getFieldProps } = formik;
-  //@ts-ignore
   return (
-    <>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
       <FormikProvider value={formik}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-            <DialogTitle>{'Misafir Ekle'}</DialogTitle>
-            <Divider />
-            <DialogContent sx={{ p: 2.5 }}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <InputLabel htmlFor="reservation-name"> Test</InputLabel>
+        <Form onSubmit={formik.handleSubmit}>
+          <DialogTitle>Misafir Ekle</DialogTitle>
+          <Divider />
+          <DialogContent sx={{ p: 2.5 }}>
+            <Grid container spacing={3} justifyContent="space-between" alignItems="center">
+              <Grid item xs={2}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="name">İsim *</InputLabel>
+                </Stack>
+              </Grid>
+              <Grid item xs={10}>
+                <Stack spacing={1}>
                   <TextField
                     fullWidth
-                    id="reservation-name"
-                    placeholder="Test"
-                    {...getFieldProps('name')}
-                    error={Boolean(touched.name && errors.name)}
-                    helperText={touched.name && errors.name}
+                    id="name"
+                    name="name"
+                    placeholder="İsim Yazınız.."
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    error={formik.touched.name && Boolean(formik.errors.name)}
+                    helperText={formik.touched.name && formik.errors.name}
                   />
-                </Grid>
+                </Stack>
               </Grid>
-            </DialogContent>
-            <Divider />
-            <DialogActions sx={{ p: 2.5 }}>
-              <Grid container justifyContent="space-between" alignItems="center">
-                <Grid item>
-                  <Stack direction="row" spacing={2} alignItems="center">
+              <Grid item xs={2}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="surname">Soyisim *</InputLabel>
+                </Stack>
+              </Grid>
+              <Grid item xs={10}>
+                <Stack spacing={1}>
+                  <TextField
+                    fullWidth
+                    id="surname"
+                    name="surname"
+                    placeholder="Soyisim Yazınız.."
+                    value={formik.values.surname}
+                    onChange={formik.handleChange}
+                    error={formik.touched.surname && Boolean(formik.errors.surname)}
+                    helperText={formik.touched.surname && formik.errors.surname}
+                  />
+                </Stack>
+              </Grid>
+              <Grid item xs={2}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="phone">Telefon </InputLabel>
+                </Stack>
+              </Grid>
+              <Grid item xs={10}>
+                <Stack spacing={1}>
+                  <TextField
+                    fullWidth
+                    id="phone"
+                    name="phone"
+                    placeholder="İsteğe bağlı Telefon Numarsı.."
+                    value={formik.values.phone}
+                    onChange={formik.handleChange}
+                    error={formik.touched.phone && Boolean(formik.errors.phone)}
+                    helperText={formik.touched.phone && formik.errors.phone}
+                  />
+                </Stack>
+              </Grid>
+              <Grid item xs={2}>
+                <Stack spacing={1}>
+                  {' '}
+                  <InputLabel htmlFor="peopleType">Yaş Grubu * </InputLabel>{' '}
+                </Stack>
+              </Grid>
+              <Grid item xs={10}>
+                <Stack spacing={1}>
+                  <FormControl>
+                    <RadioGroup
+                      row
+                      aria-label="peopleType"
+                      value={formik.values.peopleType}
+                      onChange={formik.handleChange}
+                      name="peopleType"
+                      id="peopleType"
+                    >
+                      <FormControlLabel value="Adult" control={<Radio />} label="Yetişkin" />
+                      <FormControlLabel value="Child" control={<Radio />} label="Çocuk" />
+                      <FormControlLabel value="Baby" control={<Radio />} label="Bebek" />
+                    </RadioGroup>
+                  </FormControl>
+                  {formik.errors.peopleType && (
+                    <FormHelperText error id="standard-weight-helper-text-email-login">
+                      {formik.errors.peopleType}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <Divider />
+          <DialogActions sx={{ p: 2.5 }}>
+            <Grid container justifyContent="space-between" alignItems="center">
+              <Grid item>
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <AnimateButton>
                     <Button color="error" onClick={onCancel}>
-                      İptal
+                      İPTAL
                     </Button>
-                    <Button type="submit" variant="contained">
-                      {'Ekle'}
+                  </AnimateButton>
+                  <AnimateButton>
+                    <Button variant="contained" type="submit">
+                      KAYDET
                     </Button>
-                  </Stack>
-                </Grid>
+                  </AnimateButton>
+                </Stack>
               </Grid>
-            </DialogActions>
-          </Form>
-        </LocalizationProvider>
+            </Grid>
+          </DialogActions>
+        </Form>
       </FormikProvider>
-    </>
+    </LocalizationProvider>
   );
 };
 

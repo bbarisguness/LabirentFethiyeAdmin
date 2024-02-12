@@ -167,12 +167,6 @@ const VillaContent = () => {
                 <b>Meta Description </b> : {data?.data.data.attributes.metaDescription}
               </Typography>
 
-              <Typography color="secondary" mt={2}>
-                <b>Kısa Açıklama </b> : {data?.data.data.attributes.descriptionShort}
-              </Typography>
-              <Typography color="secondary" mt={2}>
-                <b>Uzun Açıklama </b> : <div dangerouslySetInnerHTML={{ __html: data?.data.data.attributes.descriptionLong }} />
-              </Typography>
             </MainCard>
           </Grid>
           <Grid item xs={12}>

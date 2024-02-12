@@ -50,11 +50,11 @@ const ReservationAdd = () => {
     Size: 15
   });
 
+  const [reservationItem, setReservationItem] = useState([]);
   const [date1, setDate1] = useState(null);
   const [date2, setDate2] = useState(null);
   const [isAvailable, setIsAvailable] = useState(true);
   var villaId: any = 0;
-
   const formik = useFormik({
     initialValues: getInitialValues(),
     validationSchema: CustomerSchema,
@@ -117,6 +117,19 @@ const ReservationAdd = () => {
                     connect: [res.data.data.id]
                   }
                 }
+              });
+
+              reservationItem.map((rItem: any) => {
+                console.log(rItem.day);
+                apiRequest('POST', 'reservation-items', {
+                  data: {
+                    day: rItem.day,
+                    price: rItem.price,
+                    reservation: {
+                      connect: [res.data.data.id]
+                    }
+                  }
+                });
               });
 
               navigate('/villa/show/' + values.villaId + '/summary');
@@ -190,15 +203,21 @@ const ReservationAdd = () => {
 
             resP.data.data.map((priceDate: any) => {
               while (fakeDate >= new Date(priceDate.attributes.checkIn) && fakeDate <= new Date(priceDate.attributes.checkOut)) {
-                if (fakeDate > new Date(moment(date2).format('YYYY-MM-DD'))) break;
+                if (fakeDate >= new Date(moment(date2).format('YYYY-MM-DD'))) break;
                 days.push({ date: moment(fakeDate).format('YYYY-MM-DD'), price: priceDate.attributes.price });
                 fakeDate.setDate(fakeDate.getDate() + 1);
               }
             });
             var toplam = 0;
+            var rezItem: any = [];
+
             for (var i = 0; i < days.length; i++) {
               toplam = toplam + Number(days[i].price);
+              rezItem.push({ day: days[i].date, price: days[i].price });
             }
+            //console.log(rezItem);
+
+            setReservationItem(rezItem);
             formik.values.total = toplam;
             if (toplam > 0) setIsAvailable(false);
             else setIsAvailable(true);
