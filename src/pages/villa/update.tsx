@@ -33,7 +33,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import { useTheme } from '@mui/material/styles';
 import { ThemeDirection, ThemeMode } from 'types/config';
 import useConfig from 'hooks/useConfig';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const VillaUpdate = () => {
   const CustomerSchema = Yup.object().shape({
@@ -66,7 +66,9 @@ const VillaUpdate = () => {
   );
 
   const [editorState, setEditorState] = useState(() => {
-    const initialContent = '';
+    //@ts-ignore
+    console.log()
+    const initialContent = villa?.data.data.attributes.descriptionLong || "";
     return EditorState.createWithContent(ContentState.createFromText(initialContent));
   });
   const onContentChange = (editorState: EditorState) => {
@@ -75,7 +77,12 @@ const VillaUpdate = () => {
     //console.log(stateToHTML(editorState.getCurrentContent()));
     setFieldValue('descriptionLong', stateToHTML(editorState.getCurrentContent()));
   };
+  useEffect(() => {
+    if(typeof villa?.data !== "undefined"){
+        setEditorState(EditorState.createWithContent(ContentState.createFromText(villa?.data.data.attributes.descriptionLong)))
 
+    }
+  },[villa])
   //setEditorState(villa?.data.data.attributes.descriptionLong)
 
   const { mutate } = useUpdateVilla(params.id as string);
@@ -380,7 +387,7 @@ const VillaUpdate = () => {
                     {...getFieldProps('distance_rulers')}
                     //@ts-ignore
                     renderValue={(selected: any) =>
-                      selected.map((x) => {
+                      selected.map((x:any) => {
                         return x + ', ';
                       })
                     }
@@ -415,7 +422,7 @@ const VillaUpdate = () => {
                     {...getFieldProps('features')}
                     //@ts-ignore
                     renderValue={(selected: any) =>
-                      selected.map((x) => {
+                      selected.map((x:any) => {
                         return x + ', ';
                       })
                     }
