@@ -14,7 +14,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import useCreateDatePrice from 'hooks/priceDate/useCreateDatePrice';
 //import useCreateReservationInfo from 'hooks/reservation/useCreateReservationInfo';
-import { useNavigate, useParams } from 'react-router';
+import {  useParams } from 'react-router';
 
 //import useVillas from 'hooks/villa/useVillas';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -47,7 +47,7 @@ const getInitialValues = () => {
 
 const DatePricesAdd = () => {
   const params = useParams();
-  const navigate = useNavigate();
+  
 
   const { data } = useVillas({
     Page: 1,
@@ -98,7 +98,8 @@ const DatePricesAdd = () => {
               //   onSuccess: (res) => {}
               // })
 
-              navigate('/villa/show/' + params.id + '/price');
+              //navigate('/villa/show/' + params.id + '/price');
+              
               setSubmitting(false);
             }
           }

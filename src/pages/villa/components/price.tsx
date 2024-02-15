@@ -11,11 +11,13 @@ import { useParams } from 'react-router';
 import useVillaPrice from 'hooks/villa/useVillaPrice';
 import { PopupTransition } from 'components/@extended/Transitions';
 import DatePricesCreate from 'pages/prices/add';
+import moment from 'moment';
 
 const VillaPrice = () => {
   const params = useParams();
 
-  const { data } = useVillaPrice(params.id as string);
+  //const { data } = useVillaPrice(params.id as string);
+  const { data, refetch: refreshPrices } = useVillaPrice(params.id as string);
   const [events, setEvent] = useState([]);
   const calendarRef = useRef<FullCalendar>(null);
   const handleRangeSelect = (arg: DateSelectArg) => {
@@ -33,14 +35,16 @@ const VillaPrice = () => {
 
   const convertData = (data: any) => {
     var reservations = data?.data.data;
-
-    //console.log(reservations);
+    //console.log(reservations)
+    //console.log(reservations[0].attributes.checkOut);
+    //console.log(moment(reservations[0].attributes.checkOut, 'YYYY-MM-DD').add(1, 'days').toString());
+    //console.log(moment(reservations[0].attributes.checkOut, 'YYYY-MM-DD HH:mm:ss').add(20, 'hours').format('YYYY-MM-DD HH:mm:ss').toString());
 
     var newArr = reservations.map((item: any) => {
       return {
         title: item.attributes.price + ' TL',
-        start: item.attributes.checkIn,
-        end: item.attributes.checkOut,
+        start: moment(item.attributes.checkIn, 'YYYY-MM-DD HH:mm:ss').add(1, 'hours').format('YYYY-MM-DD HH:mm:ss').toString(),
+        end: moment(item.attributes.checkOut, 'YYYY-MM-DD HH:mm:ss').add(1, 'hours').format('YYYY-MM-DD HH:mm:ss').toString(),
         display: 'block',
         allDay: true,
         backgroundColor: 'blue',
@@ -60,6 +64,7 @@ const VillaPrice = () => {
 
   const handleAdd = () => {
     setAdd(!add);
+    refreshPrices();
   };
 
   return (
