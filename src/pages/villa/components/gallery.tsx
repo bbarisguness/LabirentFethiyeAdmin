@@ -1,22 +1,19 @@
-import { Grid, List, ListItem, CardMedia, Box, Button } from '@mui/material';
+import { Grid, List, ListItem, CardMedia, Box, Button, Dialog, Stack } from '@mui/material';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import useVillaPhoto from 'hooks/villa/useVillaPhoto';
-import {  useParams } from 'react-router';
+import { useParams } from 'react-router';
 import useUpdateVillaPhoto from 'hooks/villa/useUpdateVillaPhoto';
 import { dispatch } from 'store';
 import { openSnackbar } from 'store/reducers/snackbar';
 import MainCard from 'components/MainCard';
-import { Dialog } from '@mui/material';
 import AddPhotoForm from './addPhoto';
 import { PopupTransition } from 'components/@extended/Transitions';
 import { useState } from 'react';
-import { Stack } from '@mui/material';
 import AnimateButton from 'components/@extended/AnimateButton';
 import apiRequest from 'services/request';
 
 const VillaGallery = () => {
   const params = useParams();
-  
 
   const { data: photos, refetch: refreshPhotos } = useVillaPhoto(params.id as string);
   const { mutate: drag } = useUpdateVillaPhoto();
