@@ -1,12 +1,12 @@
 // project-imports
 import MainCard from 'components/MainCard';
 
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Grid, Typography } from '@mui/material';
 
 import { Dialog, Button, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import useReservationDetail from 'hooks/reservation/useReservationDetail';
-import { Add } from 'iconsax-react';
+import { Add,Document } from 'iconsax-react';
 import { useState } from 'react';
 import { PopupTransition } from 'components/@extended/Transitions';
 import AddCustomerForm from './component/addCustomer';
@@ -21,8 +21,10 @@ function PeopleTypeReturn(peopleType: string) {
 
 const ReservationShow = () => {
   const params = useParams();
+  const navigate = useNavigate();
 
   const { data, isLoading } = useReservationDetail(params.id as string);
+  console.log(data);
 
   const [add, setAdd] = useState<boolean>(false);
   const handleAdd = () => {
@@ -35,7 +37,24 @@ const ReservationShow = () => {
         <Grid item xs={12}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <MainCard title="Rezervasyon Bilgileri" cardHeaderStyle={{ background: 'rgb(206 217 255)' }}>
+              <MainCard
+                title="Rezervasyon Bilgileri"
+                cardHeaderStyle={{ background: 'rgb(206 217 255)' }}
+                secondary={
+                  <>
+                    <Button
+                      variant="contained"
+                      startIcon={<Document />}
+                      onClick={() => {
+                        navigate('/reservation/invoice/' + params.id);
+                      }}
+                      size="medium"
+                    >
+                      Fatura
+                    </Button>
+                  </>
+                }
+              >
                 <Typography color="secondary">
                   <b>Buraya bir buton eklenecek "Rezervasyon Faturası" url : "/reservation/invoice/2"</b>
                 </Typography>
@@ -52,7 +71,11 @@ const ReservationShow = () => {
 
                 <Typography color="secondary" mt={2}>
                   <b>Check In </b> : {data?.data.data.attributes.checkIn} <br />
-                  <b>Check Out </b> : {data?.data.data.attributes.checkOut}
+                  <b>Check Out </b> : {data?.data.data.attributes.checkOut} <br />
+                </Typography>
+                <Typography color="secondary" mt={2}>
+                  <b>Gece </b> : {data?.data.data.attributes.reservation_items.data.length} <br />
+                  <b>Toplam Tutar </b> : {data?.data.data.attributes.total} TL
                 </Typography>
               </MainCard>
             </Grid>

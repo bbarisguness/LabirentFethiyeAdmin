@@ -84,6 +84,7 @@ const ReservationList = () => {
           <TableHead>
             <TableRow>
               <TableCell sx={{ pl: 3 }}>Müşteri</TableCell>
+              <TableCell sx={{ pl: 3 }}>Villa</TableCell>
               <TableCell align="right">Check-In</TableCell>
               <TableCell align="right">Check-Out</TableCell>
               <TableCell align="right">Toplam Tutar</TableCell>
@@ -96,6 +97,9 @@ const ReservationList = () => {
                 <TableRow hover key={row.id} sx={{ cursor: 'pointer' }} onClick={() => navigate('/reservation/show/' + row.id)}>
                   <TableCell sx={{ pl: 3 }} component="th" scope="row">
                     {row.attributes.reservation_infos.data[0].attributes.name} {row.attributes.reservation_infos.data[0].attributes.surname}
+                  </TableCell>
+                  <TableCell sx={{ pl: 3 }} component="th" scope="row">
+                    {row.attributes.villa.data.attributes.name}
                   </TableCell>
                   <TableCell align="right">
                     <Moment format="DD/MM/YYYY">{row.attributes.checkIn}</Moment>

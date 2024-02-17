@@ -1,5 +1,5 @@
 // assets
-import { Building3, PresentionChart, Calendar2, DocumentCopy, Monitor } from 'iconsax-react';
+import { DocumentText, MenuBoard, Monitor, Setting2 } from 'iconsax-react';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -7,10 +7,9 @@ import { NavItemType } from 'types/menu';
 // icons
 const icons = {
   widgets: Monitor,
-  rapor: DocumentCopy,
-  calendar: Calendar2,
-  aparts: Building3,
-  chart: PresentionChart
+  menu: MenuBoard,
+  staticpage: DocumentText,
+  setting: Setting2
 };
 
 // ==============================|| MENU ITEMS - WIDGETS ||============================== //
@@ -23,24 +22,24 @@ const website: NavItemType = {
   children: [
     {
       id: 'website-staticpage',
-      title: 'Static Sayfalar',
+      title: 'Sabit Sayfalar',
       type: 'item',
       url: '/website/static-page/list',
-      icon: icons.widgets
+      icon: icons.staticpage
     },
     {
       id: 'website-genel',
       title: 'Genel Ayarlar',
       type: 'item',
       url: '#',
-      icon: icons.widgets
+      icon: icons.setting
     },
     {
       id: 'website-menu',
       title: 'Menü Ayarları',
       type: 'item',
       url: '#',
-      icon: icons.widgets
+      icon: icons.menu
     }
   ]
 };

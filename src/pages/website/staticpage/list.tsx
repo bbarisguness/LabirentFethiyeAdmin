@@ -44,7 +44,7 @@ const StaticPageList = () => {
   };
 
   return (
-    <MainCard content={false} title="Static Sayfalar">
+    <MainCard content={false} title="Sabit Sayfalar">
       <TableContainer>
         <Table sx={{ minWidth: 350 }} aria-label="simple table">
           <TableHead>
@@ -56,7 +56,7 @@ const StaticPageList = () => {
             {isLoading && <CircularProgress />}
             {data &&
               data?.data.data.map((row: any, key: any) => (
-                <TableRow hover key={row.id} onClick={() => navigate('/reservation/show/' + row.id)}>
+                <TableRow hover key={row.id}>
                   <TableCell sx={{ pl: 3 }} component="th" scope="row">
                     {row.attributes.name}
                   </TableCell>

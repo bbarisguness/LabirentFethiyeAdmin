@@ -21,8 +21,9 @@ import { useState } from 'react';
 import MainCard from 'components/MainCard';
 import useReservations from 'hooks/reservation/useReservations';
 import { Add } from 'iconsax-react';
-import Moment from 'react-moment';
-import AddReservationForm from './component/addForm';
+//import AddReservationForm from './component/addForm';
+import { Typography } from '@mui/material';
+import ReservationCreate from './add';
 
 const RECORD_SIZE = 15;
 
@@ -58,7 +59,7 @@ const ReservationAvailableList = () => {
   return (
     <MainCard
       content={false}
-      title="Rezervasyon Listesi"
+      title="Müsaitlik Listesi"
       secondary={
         <>
           <Button variant="contained" startIcon={<Add />} onClick={handleAdd} size="small">
@@ -77,33 +78,32 @@ const ReservationAvailableList = () => {
         sx={{ '& .MuiDialog-paper': { p: 0 }, transition: 'transform 225ms' }}
         aria-describedby="alert-dialog-slide-description"
       >
-        <AddReservationForm onCancel={handleAdd} resFetch={refetch} />
+        {/* <AddReservationForm onCancel={handleAdd} resFetch={refetch} /> */}
+        <ReservationCreate />
       </Dialog>
+      <Typography color="secondary" m={5}>
+        <b>* Burada sadece müsait tarihler listelenecek. Şuanda Liste yanlış. Düzenleme yapılacak. </b>
+      </Typography>
+
       <TableContainer>
         <Table sx={{ minWidth: 350 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell sx={{ pl: 3 }}>Müşteri</TableCell>
-              <TableCell align="right">Check-In</TableCell>
-              <TableCell align="right">Check-Out</TableCell>
-              <TableCell align="right">Toplam Tutar</TableCell>
+            <TableCell align="left">Tesis</TableCell>
+              <TableCell align="left">CheckIn</TableCell>
+              <TableCell align="left">CheckOut</TableCell>
+              <TableCell align="left">Days</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {isLoading && <CircularProgress />}
             {data &&
               data?.data.data.map((row: any, key: any) => (
-                <TableRow hover key={row.id} onClick={() => navigate('/reservation/show/' + row.id)}>
-                  <TableCell sx={{ pl: 3 }} component="th" scope="row">
-                    {row.attributes.reservation_infos.data[0].attributes.name} {row.attributes.reservation_infos.data[0].attributes.surname}
-                  </TableCell>
-                  <TableCell align="right">
-                    <Moment format="DD/MM/YYYY">{row.attributes.checkIn}</Moment>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Moment format="DD/MM/YYYY">{row.attributes.checkOut}</Moment>
-                  </TableCell>
-                  <TableCell align="right">{row.attributes.total + ' TL'}</TableCell>
+                <TableRow hover key={row.id} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
+                  <TableCell align="left">{row.attributes.villa.data.attributes.name}</TableCell>
+                  <TableCell align="left">{row.attributes.checkIn}</TableCell>
+                  <TableCell align="left">{row.attributes.checkOut}</TableCell>
+                  <TableCell align="left">{row.attributes.total} TL</TableCell>
                 </TableRow>
               ))}
           </TableBody>

@@ -1,5 +1,5 @@
 // assets
-import { Building3, PresentionChart,Home3 } from 'iconsax-react';
+import { Building3, PresentionChart, Home3, Building4 } from 'iconsax-react';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -7,8 +7,8 @@ import { NavItemType } from 'types/menu';
 // icons
 const icons = {
   widgets: Home3,
-  villas: Home3,
-  aparts: Building3,
+  villas: Building3,
+  aparts: Building4,
   chart: PresentionChart
 };
 
@@ -16,22 +16,22 @@ const icons = {
 
 const tesis: NavItemType = {
   id: 'group-tesis',
-  title: "Tesis İşlemleri",
+  title: 'Tesis İşlemleri',
   icon: icons.widgets,
   type: 'group',
   children: [
     {
       id: 'villas',
-      title: "Villalar",
+      title: 'Villalar',
       type: 'item',
       url: '/villa/list',
       icon: icons.villas
     },
     {
       id: 'aparts',
-      title: "Apartlar",
+      title: 'Apartlar',
       type: 'item',
-      url: '/aparts',
+      url: '#',
       icon: icons.aparts
     }
   ]

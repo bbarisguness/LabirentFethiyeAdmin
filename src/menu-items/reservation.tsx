@@ -1,5 +1,5 @@
 // assets
-import { Building3, PresentionChart, Home3, Calendar1, Calendar2 } from 'iconsax-react';
+import { Building3, PresentionChart, Home3, CalendarSearch, CalendarAdd } from 'iconsax-react';
 
 // type
 import { NavItemType } from 'types/menu';
@@ -7,8 +7,8 @@ import { NavItemType } from 'types/menu';
 // icons
 const icons = {
   widgets: Home3,
-  list: Calendar1,
-  calendar: Calendar2,
+  list: CalendarSearch,
+  calendar: CalendarAdd,
   aparts: Building3,
   chart: PresentionChart
 };

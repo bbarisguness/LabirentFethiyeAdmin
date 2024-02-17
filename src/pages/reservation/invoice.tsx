@@ -17,7 +17,8 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Divider
+  Divider,
+  Button
 } from '@mui/material';
 
 // third-party
@@ -29,18 +30,18 @@ import MainCard from 'components/MainCard';
 import LogoSection from 'components/logo';
 
 // assets
-import { Edit, Printer, Share } from 'iconsax-react';
+import { BackSquare, Printer } from 'iconsax-react';
 
 import useReservationInvoice from 'hooks/reservation/useReservationInvoice';
 
 const ReservationInvoice = () => {
   const { id } = useParams();
-  const navigation = useNavigate();
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const { data, isLoading } = useReservationInvoice(id as string);
 
-  console.log(data);
+  //console.log(data);
 
   //   const today = new Date(`${list?.date}`).toLocaleDateString('en-GB', {
   //     month: 'numeric',
@@ -54,11 +55,11 @@ const ReservationInvoice = () => {
   //     year: 'numeric'
   //   });
 
-  const subtotal = 7500;
+  const subtotal = data?.data.data.attributes.total;
 
-  const taxRate = 200;
-  const discountRate = 10;
-  const total = subtotal - discountRate + taxRate;
+  const discountRate = 2000;
+  const taxRate = ((data?.data.data.attributes.total - discountRate) * 20) / 100;
+  const total = subtotal + taxRate;
   const componentRef = useRef(null);
 
   if (isLoading) return <Loader />;
@@ -69,9 +70,22 @@ const ReservationInvoice = () => {
         <Box sx={{ p: 2.5, pb: 0 }}>
           <MainCard content={false} border={false} sx={{ p: 1.25, bgcolor: 'secondary.lighter' }}>
             <Stack direction="row" justifyContent="flex-end" spacing={1}>
-              <IconButton onClick={() => navigation(`/apps/invoice/edit/${id}`)}>
+              {/* <IconButton onClick={() => navigation(`/apps/invoice/edit/${id}`)}>
                 <Edit color={theme.palette.text.secondary} />
-              </IconButton>
+              </IconButton> */}
+              {/* <IconButton onClick={() => navigate(-1)}>
+                <BackSquare color={theme.palette.text.secondary} />
+              </IconButton> */}
+              <Button
+                      variant="contained"                      
+                      startIcon={<BackSquare />}
+                      onClick={() => {
+                        navigate(-1)
+                      }}
+                      size="extraSmall"
+                    >
+                      Geri Dön
+                    </Button>
               {/* <PDFDownloadLink document={ <ExportPDFView list={list} />} fileName={`${list?.invoice_id}-${list?.customer_name}.pdf`} >
                 <IconButton>
                   <DocumentDownload color={theme.palette.text.secondary} />
@@ -85,9 +99,9 @@ const ReservationInvoice = () => {
                 )}
                 content={() => componentRef.current}
               />
-              <IconButton>
+              {/* <IconButton>
                 <Share color={theme.palette.text.secondary} />
-              </IconButton>
+              </IconButton> */}
             </Stack>
           </MainCard>
         </Box>
@@ -98,9 +112,9 @@ const ReservationInvoice = () => {
                 <Stack spacing={0.5}>
                   <Stack direction="row" spacing={2}>
                     <LogoSection />
-                    <Chip label="Paid" variant="light" color="success" size="small" />
+                    <Chip label="Ödendi" variant="light" color="success" size="small" />
                   </Stack>
-                  <Typography color="secondary">#{data?.data.data.id}</Typography>
+                  {/* <Typography color="secondary">#{data?.data.data.id}</Typography> */}
                 </Stack>
                 <Box>
                   <Stack direction="row" spacing={1} justifyContent="flex-end">
@@ -125,7 +139,7 @@ const ReservationInvoice = () => {
                       <Typography color="secondary">Adı: {data?.data.data.attributes.villa.data.attributes.name}</Typography>
                       <Typography color="secondary">Bölge: {data?.data.data.attributes.villa.data.attributes.region}</Typography>
                       <Typography color="secondary">
-                        Oda / Banyo:{data?.data.data.attributes.villa.data.attributes.room} /{' '}
+                        Oda / Banyo: {data?.data.data.attributes.villa.data.attributes.room} /{' '}
                         {data?.data.data.attributes.villa.data.attributes.bath}
                       </Typography>
                       <Typography color="secondary">Kapasite: {data?.data.data.attributes.villa.data.attributes.person}</Typography>
@@ -179,21 +193,21 @@ const ReservationInvoice = () => {
               <Stack spacing={2}>
                 <Stack direction="row" justifyContent="space-between">
                   <Typography color={theme.palette.secondary.main}>Sub Total:</Typography>
-                  <Typography>{'TL' + subtotal?.toFixed(2)}</Typography>
+                  <Typography>{subtotal?.toFixed(2)} TL</Typography>
                 </Stack>
                 <Stack direction="row" justifyContent="space-between">
                   <Typography color={theme.palette.secondary.main}>Discount:</Typography>
                   <Typography variant="h6" color={theme.palette.success.main}>
-                    {'TL' + discountRate?.toFixed(2)}
+                    {discountRate?.toFixed(2)} TL
                   </Typography>
                 </Stack>
                 <Stack direction="row" justifyContent="space-between">
                   <Typography color={theme.palette.secondary.main}>Tax:</Typography>
-                  <Typography>{'TL' + taxRate?.toFixed(2)}</Typography>
+                  <Typography>{taxRate?.toFixed(2)} TL</Typography>
                 </Stack>
                 <Stack direction="row" justifyContent="space-between">
                   <Typography variant="subtitle1">Grand Total:</Typography>
-                  <Typography variant="subtitle1">{total % 1 === 0 ? 'TL' + total : 'TL' + total?.toFixed(2)}</Typography>
+                  <Typography variant="subtitle1">{total % 1 === 0 ? total : total?.toFixed(2)} TL</Typography>
                 </Stack>
               </Stack>
             </Grid>
