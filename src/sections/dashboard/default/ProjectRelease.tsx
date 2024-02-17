@@ -34,11 +34,11 @@ const ProjectRelease = () => {
               data?.data.data.map((row: any, index: any) => (
                 <ListItemButton key={index} onClick={() => navigate('/reservation/show/' + row.id)}>
                   <ListItemIcon>
-                    <Dot color={row.attributes.checkOut == '2024-01-11' ? 'warning' : 'success'} />
+                    <Dot color={row.attributes.checkOut === '2024-01-11' ? 'warning' : 'success'} />
                   </ListItemIcon>
                   <ListItemText
                     primary={
-                      (row.attributes.checkOut == '2024-01-11' ? 'ÇIKIŞ - ' : 'GİRİŞ - ') + ' ' + row.attributes.villa.data.attributes.name
+                      (row.attributes.checkOut === '2024-01-11' ? 'ÇIKIŞ - ' : 'GİRİŞ - ') + ' ' + row.attributes.villa.data.attributes.name
                     }
                   />
                 </ListItemButton>

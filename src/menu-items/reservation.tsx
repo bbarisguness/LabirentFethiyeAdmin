@@ -16,7 +16,7 @@ const icons = {
 // ==============================|| MENU ITEMS - WIDGETS ||============================== //
 
 const reservation: NavItemType = {
-  id: 'group-tesis',
+  id: 'group-reservation',
   title: 'Rezervasyon İşlemleri',
   icon: icons.widgets,
   type: 'group',
