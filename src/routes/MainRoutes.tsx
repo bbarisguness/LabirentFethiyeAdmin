@@ -8,7 +8,7 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 import VillaShow from 'pages/villa/show';
 import VillaSummary from 'pages/villa/components/summary';
 import VillaReservation from 'pages/villa/components/reservation';
-import VillaPrice from 'pages/villa/components/price';
+//import VillaPrice from 'pages/villa/components/price';
 import VillaGallery from 'pages/villa/components/gallery';
 import VillaFile from 'pages/villa/components/file';
 import ReservationList from 'pages/reservation/list';
@@ -25,6 +25,7 @@ import StaticPageList from 'pages/website/staticpage/list';
 import ReservationCreate from 'pages/reservation/add';
 import ReservationAvailableList from 'pages/reservation/availableList';
 import ReservationUpdate from 'pages/reservation/update';
+import ShowPriceDate from 'pages/villa/components/priceDateComponents/showPriceDate';
 //import Default from 'pages/dashboard/default';
 
 // pages routing
@@ -71,7 +72,8 @@ const MainRoutes = {
             },
             {
               path: 'price',
-              element: <VillaPrice />
+              //element: <VillaPrice />
+              element: <ShowPriceDate />
             },
             {
               path: 'gallery',

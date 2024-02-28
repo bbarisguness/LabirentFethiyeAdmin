@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
+
 // fonts
 import 'assets/fonts/inter/inter.css';
 
