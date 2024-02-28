@@ -24,6 +24,7 @@ import VillaAvailableDate from 'pages/villa/components/availableDate';
 import StaticPageList from 'pages/website/staticpage/list';
 import ReservationCreate from 'pages/reservation/add';
 import ReservationAvailableList from 'pages/reservation/availableList';
+import ReservationUpdate from 'pages/reservation/update';
 //import Default from 'pages/dashboard/default';
 
 // pages routing
@@ -188,6 +189,9 @@ const MainRoutes = {
         {
           path: 'add',
           element: <ReservationCreate />
+        },{
+          path: 'update/:id',
+          element: <ReservationUpdate />
         },
         {
           path: 'calendar',

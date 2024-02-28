@@ -20,25 +20,36 @@ import {
   TextField
 } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import useCreateReservationInfo from 'hooks/reservation/useCreateReservationInfo';
-import { useParams } from 'react-router';
 import AnimateButton from 'components/@extended/AnimateButton';
+import { useEffect, useState } from 'react';
+import apiRequest from 'services/request';
+import useUpdateReservationInfo from 'hooks/reservation/useUpdateReservationInfo';
 
 export interface Props {
   onCancel: () => void;
+  RiId?: string;
 }
-const getInitialValues = () => {
-  const newReservation = {
-    name: '',
-    surname: '',
-    phone: '',
-    peopleType: '',
-    reservation: {}
-  };
-  return newReservation;
-};
-const AddCustomerForm = ({ onCancel }: Props) => {
-  const params = useParams();
+// const getInitialValues = () => {
+//   const newReservation = {
+//     name: '',
+//     surname: '',
+//     phone: '',
+//     peopleType: ''
+//   };
+//   return newReservation;
+// };
+const UpdateCustomerFormModal = ({ onCancel, RiId }: Props) => {
+  const [reservationInfo, setReservationInfo] = useState();
+
+  useEffect(() => {
+    if (RiId !== undefined) {
+      apiRequest('GET', '/reservation-infos/' + RiId).then((res) => {
+        if (res.status === 200) {
+          setReservationInfo(res.data.data);
+        }
+      });
+    }
+  }, [RiId]);
 
   const CustomerSchema = Yup.object().shape({
     name: Yup.string().max(255).required('İsim tarihi zorunludur'),
@@ -47,19 +58,14 @@ const AddCustomerForm = ({ onCancel }: Props) => {
     peopleType: Yup.string().max(255).required('Bu alan zorunludur')
   });
 
-  const { mutate } = useCreateReservationInfo();
+  const { mutate } = useUpdateReservationInfo(RiId as string);
 
   const formik = useFormik({
-    initialValues: getInitialValues(),
+    initialValues: getInitialValues(reservationInfo),
     validationSchema: CustomerSchema,
+    enableReinitialize: true,
     onSubmit: (values, { setSubmitting }) => {
       try {
-        if (!params.id) {
-          alert('Rezervasyon Id hatali..');
-          return;
-        }
-
-        values.reservation = { connect: [params.id] };
         mutate(
           {
             data: values
@@ -79,12 +85,10 @@ const AddCustomerForm = ({ onCancel }: Props) => {
               );
             },
             onSuccess: (res) => {
-              //alert('Misafir Eklendi..');
-              //navigate('/villa/show/' + params.id + '/content');
               dispatch(
                 openSnackbar({
                   open: true,
-                  message: 'Müşteri başarıyla eklendi..',
+                  message: 'Müşteri başarıyla güncellendi!',
                   variant: 'alert',
                   alert: {
                     color: 'success'
@@ -224,4 +228,13 @@ const AddCustomerForm = ({ onCancel }: Props) => {
   );
 };
 
-export default AddCustomerForm;
+const getInitialValues = (data: any) => {
+  const newDistanceRuler = {
+    name: (data?.attributes.name ?? '') as string,
+    surname: (data?.attributes.surname ?? '') as string,
+    phone: (data?.attributes.phone ?? '') as string,
+    peopleType: (data?.attributes.peopleType ?? '') as string
+  };
+  return newDistanceRuler;
+};
+export default UpdateCustomerFormModal;

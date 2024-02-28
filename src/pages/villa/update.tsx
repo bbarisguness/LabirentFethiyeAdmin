@@ -22,8 +22,8 @@ import { v4 as uuid } from 'uuid';
 
 import MainCard from 'components/MainCard';
 import useCategory from 'hooks/category/useCategory';
-import useDistance from 'hooks/distance/useDistance';
-import useFeature from 'hooks/feature/useFeature';
+// import useDistance from 'hooks/distance/useDistance';
+// import useFeature from 'hooks/feature/useFeature';
 import { useParams } from 'react-router';
 import useVilla from 'hooks/villa/useVilla';
 import useUpdateVilla from 'hooks/villa/useUpdateVilla';
@@ -56,8 +56,8 @@ const VillaUpdate = () => {
   const { themeDirection } = useConfig();
 
   const { data: categories } = useCategory();
-  const { data: distances } = useDistance();
-  const { data: features } = useFeature();
+  // const { data: distances } = useDistance();
+  // const { data: features } = useFeature();
   const { data: villa, refetch } = useVilla(
     params.id as string,
     '/villas/' +
@@ -67,8 +67,8 @@ const VillaUpdate = () => {
 
   const [editorState, setEditorState] = useState(() => {
     //@ts-ignore
-    console.log()
-    const initialContent = villa?.data.data.attributes.descriptionLong || "";
+    //console.log()
+    const initialContent = villa?.data.data.attributes.descriptionLong || '';
     return EditorState.createWithContent(ContentState.createFromText(initialContent));
   });
   const onContentChange = (editorState: EditorState) => {
@@ -78,11 +78,10 @@ const VillaUpdate = () => {
     setFieldValue('descriptionLong', stateToHTML(editorState.getCurrentContent()));
   };
   useEffect(() => {
-    if(typeof villa?.data !== "undefined"){
-        setEditorState(EditorState.createWithContent(ContentState.createFromText(villa?.data.data.attributes.descriptionLong)))
-
+    if (typeof villa?.data !== 'undefined') {
+      setEditorState(EditorState.createWithContent(ContentState.createFromText(villa?.data.data.attributes.descriptionLong)));
     }
-  },[villa])
+  }, [villa]);
   //setEditorState(villa?.data.data.attributes.descriptionLong)
 
   const { mutate } = useUpdateVilla(params.id as string);
@@ -92,15 +91,15 @@ const VillaUpdate = () => {
     enableReinitialize: true,
     onSubmit: (values, { setSubmitting }) => {
       try {
-        var feids: any = [];
-        var drids: any = [];
+        // var feids: any = [];
+        // var drids: any = [];
         var catids: any = [];
-        values.distance_rulers.map((x: any) => {
-          var a = distances?.data.data.find((dr: any) => dr.attributes.name === x);
-          if (a) {
-            drids.push(a.id);
-          }
-        });
+        // values.distance_rulers.map((x: any) => {
+        //   var a = distances?.data.data.find((dr: any) => dr.attributes.name === x);
+        //   if (a) {
+        //     drids.push(a.id);
+        //   }
+        // });
 
         values.categories.map((x: any) => {
           var a = categories?.data.data.find((dr: any) => dr.attributes.name === x);
@@ -109,15 +108,15 @@ const VillaUpdate = () => {
           }
         });
 
-        values.features.map((x: any) => {
-          var a = features?.data.data.find((dr: any) => dr.attributes.name === x);
-          if (a) {
-            feids.push(a.id);
-          }
-        });
+        // values.features.map((x: any) => {
+        //   var a = features?.data.data.find((dr: any) => dr.attributes.name === x);
+        //   if (a) {
+        //     feids.push(a.id);
+        //   }
+        // });
         values.slug = uuid();
-        values.features = feids;
-        values.distance_rulers = drids;
+        // values.features = feids;
+        // values.distance_rulers = drids;
         values.categories = catids;
 
         mutate(
@@ -376,7 +375,7 @@ const VillaUpdate = () => {
                   helperText={touched.metaDescription && errors.metaDescription}
                 />
               </Grid>
-              <Grid item xs={6}>
+              {/* <Grid item xs={6}>
                 <InputLabel id="villa-distance_rulers-label">Mesafeler</InputLabel>
                 <FormControl fullWidth>
                   <Select
@@ -410,8 +409,8 @@ const VillaUpdate = () => {
                       )}
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={6}>
+              </Grid> */}
+              {/* <Grid item xs={6}>
                 <InputLabel id="villa-features-label">Özellikler</InputLabel>
                 <FormControl fullWidth>
                   <Select
@@ -445,7 +444,7 @@ const VillaUpdate = () => {
                       )}
                   </Select>
                 </FormControl>
-              </Grid>
+              </Grid> */}
               <Grid item xs={6}>
                 <InputLabel htmlFor="villa-video">Video</InputLabel>
                 <TextField
@@ -510,15 +509,15 @@ const getInitialValues = (villa: any) => {
       }) ?? [],
     metaTitle: (villa?.attributes.metaTitle ?? '') as string,
     metaDescription: (villa?.attributes.metaDescription ?? '') as string,
-    distance_rulers:
-      villa?.attributes.distance_rulers.data.map((x: any) => {
-        return x.attributes.name;
-      }) ?? [],
-    video: (villa?.attributes.video ?? '') as string,
-    features:
-      villa?.attributes.features.data.map((x: any) => {
-        return x.attributes.name;
-      }) ?? []
+    // distance_rulers:
+    //   villa?.attributes.distance_rulers.data.map((x: any) => {
+    //     return x.attributes.name;
+    //   }) ?? [],
+    video: (villa?.attributes.video ?? '') as string
+    // features:
+    //   villa?.attributes.features.data.map((x: any) => {
+    //     return x.attributes.name;
+    //   }) ?? []
   };
   return newReservation;
 };

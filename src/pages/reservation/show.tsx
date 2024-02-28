@@ -6,10 +6,13 @@ import { Grid, Typography } from '@mui/material';
 
 import { Dialog, Button, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import useReservationDetail from 'hooks/reservation/useReservationDetail';
-import { Add,Document } from 'iconsax-react';
-import { useState } from 'react';
+import { Add, Document, Edit, Scanner } from 'iconsax-react';
+import { useEffect, useState } from 'react';
 import { PopupTransition } from 'components/@extended/Transitions';
 import AddCustomerForm from './component/addCustomer';
+import DeleteReservationModal from './component/deleteReservation';
+import UpdateCustomerFormModal from './component/updateCustomer';
+import DeleteReservationInfoModal from './component/deleteReservationInfo';
 
 function PeopleTypeReturn(peopleType: string) {
   if (peopleType === 'Adult') peopleType = 'Yetişkin';
@@ -23,13 +26,32 @@ const ReservationShow = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { data, isLoading } = useReservationDetail(params.id as string);
-  console.log(data);
+  const { data, isLoading, refetch } = useReservationDetail(params.id as string);
+  //console.log(data);
 
-  const [add, setAdd] = useState<boolean>(false);
-  const handleAdd = () => {
-    setAdd(!add);
+  const [deleteReservation, setDeleteReservation] = useState<boolean>(false);
+  const handleDeleteReservation = () => {
+    setDeleteReservation(!deleteReservation);
   };
+
+  const [reservationInfoId, setReservationInfoId] = useState();
+  const [addReservationInfo, setAddReservationInfo] = useState<boolean>(false);
+  const handleAddReservationInfo = () => {
+    setAddReservationInfo(!addReservationInfo);
+  };
+  const [updateReservationInfo, setUpdateReservationInfo] = useState<boolean>(false);
+  const handleUpdateReservationInfo = () => {
+    setUpdateReservationInfo(!updateReservationInfo);
+  };
+
+  const [deleteReservationInfo, setDeleteReservationInfo] = useState<boolean>(false);
+  const handleDeleteReservationInfo = () => {
+    setDeleteReservationInfo(!deleteReservationInfo);
+  };
+
+  useEffect(() => {
+    refetch();
+  }, [addReservationInfo, updateReservationInfo, deleteReservationInfo]);
 
   return (
     <MainCard title="Rezervasyon Detayı" border={false}>
@@ -37,6 +59,18 @@ const ReservationShow = () => {
         <Grid item xs={12}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
+              <Dialog
+                maxWidth="lg"
+                TransitionComponent={PopupTransition}
+                keepMounted
+                fullWidth
+                onClose={handleDeleteReservation}
+                open={deleteReservation}
+                sx={{ '& .MuiDialog-paper': { p: 0 }, transition: 'transform 225ms' }}
+                aria-describedby="alert-dialog-slide-description"
+              >
+                <DeleteReservationModal onCancel={handleDeleteReservation} RId={params.id} />
+              </Dialog>
               <MainCard
                 title="Rezervasyon Bilgileri"
                 cardHeaderStyle={{ background: 'rgb(206 217 255)' }}
@@ -51,6 +85,27 @@ const ReservationShow = () => {
                       size="medium"
                     >
                       Fatura
+                    </Button>
+                    <Button
+                      variant="contained"
+                      startIcon={<Edit />}
+                      onClick={() => {
+                        navigate('/reservation/update/' + params.id);
+                      }}
+                      size="medium"
+                      sx={{ 'margin-left': '5px' }}
+                    >
+                      Düzenle
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      startIcon={<Scanner />}
+                      onClick={handleDeleteReservation}
+                      size="medium"
+                      sx={{ 'margin-left': '5px' }}
+                    >
+                      Sil
                     </Button>
                   </>
                 }
@@ -86,24 +141,54 @@ const ReservationShow = () => {
                 cardHeaderStyle={{ background: 'rgb(206 217 255)' }}
                 secondary={
                   <>
-                    <Button variant="contained" startIcon={<Add />} onClick={handleAdd} size="medium">
+                    <Button variant="contained" startIcon={<Add />} onClick={handleAddReservationInfo} size="medium">
                       Misafir Ekle
                     </Button>
                   </>
                 }
               >
-                <Dialog
-                  maxWidth="sm"
-                  TransitionComponent={PopupTransition}
-                  keepMounted
-                  fullWidth
-                  onClose={handleAdd}
-                  open={add}
-                  sx={{ '& .MuiDialog-paper': { p: 0 }, transition: 'transform 225ms' }}
-                  aria-describedby="alert-dialog-slide-description"
-                >
-                  <AddCustomerForm onCancel={handleAdd} />
-                </Dialog>
+                {addReservationInfo && (
+                  <Dialog
+                    maxWidth="sm"
+                    TransitionComponent={PopupTransition}
+                    keepMounted
+                    fullWidth
+                    onClose={handleAddReservationInfo}
+                    open={addReservationInfo}
+                    sx={{ '& .MuiDialog-paper': { p: 0 }, transition: 'transform 225ms' }}
+                    aria-describedby="alert-dialog-slide-description"
+                  >
+                    <AddCustomerForm onCancel={handleAddReservationInfo} />
+                  </Dialog>
+                )}
+                {updateReservationInfo && (
+                  <Dialog
+                    maxWidth="lg"
+                    TransitionComponent={PopupTransition}
+                    keepMounted
+                    fullWidth
+                    onClose={handleUpdateReservationInfo}
+                    open={updateReservationInfo}
+                    sx={{ '& .MuiDialog-paper': { p: 0 }, transition: 'transform 225ms' }}
+                    aria-describedby="alert-dialog-slide-description"
+                  >
+                    <UpdateCustomerFormModal onCancel={handleUpdateReservationInfo} RiId={reservationInfoId} />
+                  </Dialog>
+                )}
+                {deleteReservationInfo && (
+                  <Dialog
+                    maxWidth="lg"
+                    TransitionComponent={PopupTransition}
+                    keepMounted
+                    fullWidth
+                    onClose={handleDeleteReservationInfo}
+                    open={deleteReservationInfo}
+                    sx={{ '& .MuiDialog-paper': { p: 0 }, transition: 'transform 225ms' }}
+                    aria-describedby="alert-dialog-slide-description"
+                  >
+                    <DeleteReservationInfoModal onCancel={handleDeleteReservationInfo} RiId={reservationInfoId} />
+                  </Dialog>
+                )}
                 <TableContainer>
                   <Table sx={{ minWidth: 350 }} aria-label="simple table">
                     <TableHead>
@@ -112,6 +197,7 @@ const ReservationShow = () => {
                         <TableCell align="right">Yaş Grubu</TableCell>
                         <TableCell align="right">Telefon</TableCell>
                         <TableCell align="right">E-mail</TableCell>
+                        <TableCell align="right"></TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -119,12 +205,58 @@ const ReservationShow = () => {
                       {data &&
                         data?.data.data.attributes.reservation_infos.data.map((row: any, key: any) => (
                           <TableRow hover key={row.id} /*onClick={() => navigate('/villa/show/' + row.id + '/summary')}*/>
-                            <TableCell sx={{ pl: 3 }} component="th" scope="row">
+                            <TableCell
+                              sx={{ pl: 3, cursor: 'pointer' }}
+                              component="th"
+                              scope="row"
+                              onClick={() => {
+                                handleUpdateReservationInfo();
+                                setReservationInfoId(row.id);
+                              }}
+                            >
                               {row.attributes.name} {row.attributes.surname} {row.attributes.owner ? ' - (Rezervasyon Sahibi)' : ''}
                             </TableCell>
-                            <TableCell align="right">{PeopleTypeReturn(row.attributes.peopleType)}</TableCell>
-                            <TableCell align="right">{row.attributes.phone}</TableCell>
-                            <TableCell align="right">{row.attributes.email}</TableCell>
+                            <TableCell
+                              sx={{ cursor: 'pointer' }}
+                              align="right"
+                              onClick={() => {
+                                handleUpdateReservationInfo();
+                                setReservationInfoId(row.id);
+                              }}
+                            >
+                              {PeopleTypeReturn(row.attributes.peopleType)}
+                            </TableCell>
+                            <TableCell
+                              sx={{ cursor: 'pointer' }}
+                              align="right"
+                              onClick={() => {
+                                handleUpdateReservationInfo();
+                                setReservationInfoId(row.id);
+                              }}
+                            >
+                              {row.attributes.phone}
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              onClick={() => {
+                                handleUpdateReservationInfo();
+                                setReservationInfoId(row.id);
+                              }}
+                            >
+                              {row.attributes.email}
+                            </TableCell>
+                            <TableCell align="right">
+                              <Button
+                                color="error"
+                                size="small"
+                                onClick={() => {
+                                  handleDeleteReservationInfo();
+                                  setReservationInfoId(row.id);
+                                }}
+                              >
+                                Sil
+                              </Button>
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>

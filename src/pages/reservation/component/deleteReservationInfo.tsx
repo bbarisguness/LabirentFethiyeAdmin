@@ -4,11 +4,11 @@ import apiRequest from 'services/request';
 
 export interface Props {
   onCancel: () => void;
-  DrId?: number;
+  RiId?: number;
 }
-const DeleteDistanceRulerModal = ({ onCancel, DrId }: Props) => {
+const DeleteReservationInfoModal = ({ onCancel, RiId }: Props) => {
   const handleSubmit = async () => {
-    apiRequest('DELETE', `/distance-rulers/${DrId}`).then((res) => {
+    apiRequest('DELETE', `/reservation-infos/${RiId}`).then((res) => {
       //console.log(res);
     });
     onCancel();
@@ -22,7 +22,7 @@ const DeleteDistanceRulerModal = ({ onCancel, DrId }: Props) => {
         <Grid container spacing={3} justifyContent="space-between" alignItems="center">
           <Grid item xs={12}>
             <Stack spacing={1}>
-              <Typography>Mesafeyi Silmek İstediğinize Emin misiniz?</Typography>
+              <Typography>Müşteriyi Silmek İstediğinize Emin misiniz?</Typography>
             </Stack>
           </Grid>
         </Grid>
@@ -50,4 +50,4 @@ const DeleteDistanceRulerModal = ({ onCancel, DrId }: Props) => {
   );
 };
 
-export default DeleteDistanceRulerModal;
+export default DeleteReservationInfoModal;

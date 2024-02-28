@@ -1,16 +1,32 @@
 import { DialogContent, DialogTitle, Divider, Typography, Button, Stack, DialogActions, Grid } from '@mui/material';
 import AnimateButton from 'components/@extended/AnimateButton';
+import useReservationDetail from 'hooks/reservation/useReservationDetail';
+import { useNavigate } from 'react-router';
 import apiRequest from 'services/request';
 
 export interface Props {
   onCancel: () => void;
-  DrId?: number;
+  RId?: string;
 }
-const DeleteDistanceRulerModal = ({ onCancel, DrId }: Props) => {
+const DeleteReservationModal = ({ onCancel, RId }: Props) => {
+  const navigate = useNavigate();
+
+  const { data } = useReservationDetail(RId as string);
   const handleSubmit = async () => {
-    apiRequest('DELETE', `/distance-rulers/${DrId}`).then((res) => {
-      //console.log(res);
-    });
+    if (data) {
+      console.log('DeleteReservationModal', data);
+
+      data.data.data.attributes.reservation_infos.data.map((item: any) => {
+        apiRequest('DELETE', `/reservation-infos/${item.id}`);
+      });
+      data.data.data.attributes.reservation_items.data.map((item: any) => {
+        apiRequest('DELETE', `/reservation-items/${item.id}`);
+      });
+      apiRequest('DELETE', `/reservations/${RId}`).then((res) => {
+        console.log(res);
+      });
+    }
+    navigate('/reservation/list');
     onCancel();
   };
 
@@ -22,7 +38,7 @@ const DeleteDistanceRulerModal = ({ onCancel, DrId }: Props) => {
         <Grid container spacing={3} justifyContent="space-between" alignItems="center">
           <Grid item xs={12}>
             <Stack spacing={1}>
-              <Typography>Mesafeyi Silmek İstediğinize Emin misiniz?</Typography>
+              <Typography>Rezervasyonu Silmek İstediğinize Emin misiniz?</Typography>
             </Stack>
           </Grid>
         </Grid>
@@ -50,4 +66,4 @@ const DeleteDistanceRulerModal = ({ onCancel, DrId }: Props) => {
   );
 };
 
-export default DeleteDistanceRulerModal;
+export default DeleteReservationModal;
