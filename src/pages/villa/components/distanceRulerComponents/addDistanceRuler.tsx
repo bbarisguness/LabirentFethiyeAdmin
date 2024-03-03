@@ -13,17 +13,12 @@ import {
 } from '@mui/material';
 import { Grid } from '@mui/material';
 import AnimateButton from 'components/@extended/AnimateButton';
-// import MainCard from 'components/MainCard';
-
 import { dispatch } from 'store';
-
 import { openSnackbar } from 'store/reducers/snackbar';
 import { useFormik, Form, FormikProvider } from 'formik';
 import * as yup from 'yup';
 import useCreateDistanceRuler from 'hooks/villa/useCreateDistanceRuler';
 import { useParams } from 'react-router';
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { FormControlLabel } from '@mui/material';
 import { Divider } from '@mui/material';
 
@@ -57,9 +52,9 @@ const AddDistanceRulerModal = ({ onCancel }: Props) => {
       try {
         if (params.id) {
           values.villa = { connect: [params.id] };
-          return;
         } else {
           console.log('villa Id boş geldi');
+          return;
         }
         mutate(
           {

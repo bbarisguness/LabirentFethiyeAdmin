@@ -16,7 +16,7 @@ const AuthGuard = ({ children }: GuardProps) => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      navigate('login', {
+      navigate('/login', {
         state: {
           from: location.pathname
         },
